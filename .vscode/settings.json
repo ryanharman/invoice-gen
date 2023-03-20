@@ -1,0 +1,7 @@
+{
+  "exportall.config.folderListener": [
+    "/src/modules/ui",
+    "/src/lib",
+    "/src/modules"
+  ]
+}

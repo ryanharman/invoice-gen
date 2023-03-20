@@ -1,0 +1,37 @@
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+
+type AuthProps = {
+  children: JSX.Element;
+  LoadingComponent?: React.ComponentType;
+  required: boolean;
+};
+
+export const Auth = ({
+  children,
+  LoadingComponent,
+  required,
+}: AuthProps): JSX.Element | null => {
+  const { status, data } = useSession({ required });
+  const { push } = useRouter();
+
+  console.log({ status, data });
+
+  // Break early and show children if auth not required
+  if (!required) return children;
+
+  if (status === "loading") {
+    return LoadingComponent ? <LoadingComponent /> : <div />;
+  }
+
+  // If the user has a session, show the children
+  if (status === "authenticated") {
+    return children;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  push("/login");
+
+  // If the user doesn't have a session, redirect to the login page and render nothing
+  return null;
+};
