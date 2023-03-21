@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { PlusIcon, SheetIcon } from 'lucide-react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { cn } from '~/lib';
@@ -28,22 +29,24 @@ export function Layout({
         <title>{title}</title>
       </Head>
       <div className="max-w-screen">
-        <nav className="fixed min-h-screen w-40 border-r bg-slate-100 px-4 py-2">
+        <nav className="fixed min-h-screen w-44 border-r bg-slate-100 px-4 py-2">
           <Typography.Large className="text-center">rynvoice</Typography.Large>
           <ul className="mt-4 flex flex-col gap-4">
             <li>
               <Button variant="link" onClick={() => push("/")}>
+                <SheetIcon className="mr-2 h-4 w-4" />
                 Invoices
               </Button>
             </li>
             <li>
               <Button variant="link" onClick={() => push("/create")}>
+                <PlusIcon className="mr-2 h-4 w-4" />
                 Create new
               </Button>
             </li>
           </ul>
         </nav>
-        <div className="h-full w-full pl-40">
+        <div className="h-full w-full pl-44">
           <header className={cn("border-b px-8 py-6", headerClassName)}>
             <Typography.H1>{title}</Typography.H1>
             {description && <Typography.P>{description}</Typography.P>}

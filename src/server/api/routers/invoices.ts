@@ -1,33 +1,30 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { InvoiceSchema } from '~/server/schemas';
+
+/**
+ * TODO: Revisit object schema to reduce duplication
+ * and unnecessary code. Maybe { invoice: { ... }, invoiceItems: [ ... ]}
+ */
 
 export const invoicesRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const invoices = await ctx.prisma.invoice.findMany({
+      where: { userId: ctx.session.user.id },
+    });
+    return invoices;
+  }),
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const invoice = await ctx.prisma.invoice.findUnique({
+        where: { id: input.id },
+        include: { items: true },
+      });
+      return invoice;
+    }),
   create: protectedProcedure
-    .input(
-      z.object({
-        status: z.string(),
-        companyName: z.string(),
-        companyEmail: z.string(),
-        companyAddress: z.string(),
-        customerName: z.string(),
-        customerEmail: z.string(),
-        customerAddress: z.string(),
-        invoiceNumber: z.string(),
-        invoiceDate: z.string(),
-        accountName: z.string(),
-        accountNumber: z.string(),
-        sortCode: z.string(),
-        paymentTerms: z.string(),
-        items: z
-          .array(
-            z.object({
-              title: z.string(),
-              amount: z.string(),
-            })
-          )
-          .optional(),
-      })
-    )
+    .input(InvoiceSchema)
     .mutation(async ({ input, ctx }) => {
       const dataObject = {
         status: input.status,
@@ -59,18 +56,20 @@ export const invoicesRouter = createTRPCRouter({
       });
       return invoice;
     }),
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const invoices = await ctx.prisma.invoice.findMany({
-      where: { userId: ctx.session.user.id },
-    });
-    return invoices;
-  }),
-  getById: protectedProcedure
+  // update: protectedProcedure
+  //   .input(InvoiceSchema.partial())
+  //   .mutation(async ({ input, ctx }) => {
+  //     const invoice = await ctx.prisma.invoice.update({
+  //       where: { id: input.id },
+  //       data: ...input,
+  //     });
+  //     return invoice;
+  //   }),
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ input, ctx }) => {
-      const invoice = await ctx.prisma.invoice.findUnique({
+    .mutation(async ({ input, ctx }) => {
+      const invoice = await ctx.prisma.invoice.delete({
         where: { id: input.id },
-        include: { items: true },
       });
       return invoice;
     }),

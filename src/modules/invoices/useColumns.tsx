@@ -3,6 +3,7 @@ import { format, isValid } from 'date-fns';
 import {
   CheckIcon,
   CrosshairIcon,
+  DownloadIcon,
   LifeBuoyIcon,
   PlusIcon,
   SearchIcon,
@@ -20,6 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -102,12 +104,6 @@ export function useColumns() {
                 <PlusIcon className="mr-2 h-4 w-4" />
                 <span>Duplicate</span>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => push(`/preview/${row.original.id}`)}
-              >
-                <SearchIcon className="mr-2 h-4 w-4" />
-                <span>Preview</span>
-              </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <LifeBuoyIcon className="mr-2 h-4 w-4" />
@@ -118,7 +114,7 @@ export function useColumns() {
                     <DropdownMenuItem
                       className={cn(
                         row.original.status.toLowerCase() !== "paid" &&
-                          "text-red-800"
+                          "text-orange-500"
                       )}
                     >
                       <CrosshairIcon className="mr-2 h-4 w-4" />
@@ -136,6 +132,21 @@ export function useColumns() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => push(`/preview/${row.original.id}`)}
+              >
+                <SearchIcon className="mr-2 h-4 w-4" />
+                <span>Preview</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                // TODO: Download functionality from here
+                onClick={() => push(`/preview/${row.original.id}`)}
+              >
+                <DownloadIcon className="mr-2 h-4 w-4" />
+                <span>Download</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-800"
                 // TODO: Implement deletion + confirm modal
