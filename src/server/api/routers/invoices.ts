@@ -18,12 +18,14 @@ export const invoicesRouter = createTRPCRouter({
         accountNumber: z.string(),
         sortCode: z.string(),
         paymentTerms: z.string(),
-        items: z.array(
-          z.object({
-            title: z.string(),
-            amount: z.string(),
-          })
-        ),
+        items: z
+          .array(
+            z.object({
+              title: z.string(),
+              amount: z.string(),
+            })
+          )
+          .optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -43,7 +45,7 @@ export const invoicesRouter = createTRPCRouter({
         paymentTerms: input.paymentTerms,
       };
 
-      const items = input.items.map((item) => ({
+      const items = input.items?.map((item) => ({
         title: item.title,
         amount: Number(item.amount),
       }));
