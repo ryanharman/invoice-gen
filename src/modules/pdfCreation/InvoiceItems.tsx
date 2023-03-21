@@ -10,10 +10,13 @@ export function InvoiceItems({ items, setItems }: Props) {
   function addItem() {
     if (items.length !== 0) {
       const newItemKey = Math.max(...items.map((item) => item.key)) + 1;
-      setItems((prev) => [...prev, { key: newItemKey, title: "", amount: 0 }]);
+      setItems((prev) => [
+        ...prev,
+        { key: newItemKey, title: "", amount: String(0) },
+      ]);
       return;
     }
-    setItems([{ key: 1, title: "", amount: 0 }]);
+    setItems([{ key: 1, title: "", amount: String(0) }]);
   }
 
   function editInvoiceItem(
