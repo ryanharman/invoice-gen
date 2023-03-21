@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useRef, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useRef, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 // import { useReactToPrint } from 'react-to-print';
-import { api } from '~/utils/api';
-import { PdfPreview } from '../pdfPreview';
-import { InvoiceItem } from '../pdfPreview/Table';
+import { api } from "~/utils/api";
+import { PdfPreview } from "../pdfPreview";
+import { InvoiceItem } from "../pdfPreview/Table";
 import {
   Accordion,
   AccordionContent,
@@ -12,15 +12,15 @@ import {
   AccordionTrigger,
   Button,
   Separator,
-} from '../ui';
-import { useToast } from '../ui/toast/useToast';
-import { CompanyDetails } from './CompanyDetails';
-import { PdfCreationState } from './context';
-import { CustomerDetails } from './CustomerDetails';
-import { InvoiceDetails } from './InvoiceDetails';
-import { InvoiceItems } from './InvoiceItems';
-import { PaymentDetails } from './PaymentDetails';
-import { PaymentTerms } from './PaymentTerms';
+} from "../ui";
+import { useToast } from "../ui/toast/useToast";
+import { CompanyDetails } from "./CompanyDetails";
+import { PdfCreationState } from "./context";
+import { CustomerDetails } from "./CustomerDetails";
+import { InvoiceDetails } from "./InvoiceDetails";
+import { InvoiceItems } from "./InvoiceItems";
+import { PaymentDetails } from "./PaymentDetails";
+import { PaymentTerms } from "./PaymentTerms";
 
 export type InvoiceItemWithKey = InvoiceItem & { key: number };
 
@@ -147,7 +147,7 @@ export function PdfCreation() {
         className="mt-8 flex max-w-4xl justify-center rounded-md p-8"
         ref={componentRef}
       >
-        <PdfPreview
+        {/* <PdfPreview
           header={{
             title: watch("companyName"),
             number: +watch("invoiceNumber"),
@@ -172,7 +172,7 @@ export function PdfCreation() {
           }}
           paymentTerms={watch("paymentTerms")}
           table={{ items }}
-        />
+        /> */}
       </div>
     </>
   );
