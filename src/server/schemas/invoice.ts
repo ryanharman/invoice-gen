@@ -19,5 +19,8 @@ export const InvoiceSchema = z.object({
   accountNumber: z.string(),
   sortCode: z.string(),
   paymentTerms: z.string(),
+});
+
+export const InvoiceSchemaWithItems = InvoiceSchema.extend({
   items: z.array(InvoiceItemSchema).optional(),
 });

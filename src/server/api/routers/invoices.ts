@@ -1,11 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { InvoiceSchema } from '~/server/schemas';
-
-/**
- * TODO: Revisit object schema to reduce duplication
- * and unnecessary code. Maybe { invoice: { ... }, invoiceItems: [ ... ]}
- */
+import { InvoiceItemSchema, InvoiceSchema } from '~/server/schemas';
 
 export const invoicesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -24,24 +19,13 @@ export const invoicesRouter = createTRPCRouter({
       return invoice;
     }),
   create: protectedProcedure
-    .input(InvoiceSchema)
+    .input(
+      z.object({
+        invoice: InvoiceSchema,
+        items: InvoiceItemSchema.array().optional(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      const dataObject = {
-        status: input.status,
-        companyName: input.companyName,
-        companyEmail: input.companyEmail,
-        companyAddress: input.companyAddress,
-        customerName: input.customerName,
-        customerEmail: input.customerEmail,
-        customerAddress: input.customerAddress,
-        invoiceNumber: input.invoiceNumber,
-        invoiceDate: input.invoiceDate,
-        accountName: input.accountName,
-        accountNumber: input.accountNumber,
-        sortCode: input.sortCode,
-        paymentTerms: input.paymentTerms,
-      };
-
       const items = input.items?.map((item) => ({
         title: item.title,
         amount: Number(item.amount),
@@ -49,22 +33,42 @@ export const invoicesRouter = createTRPCRouter({
 
       const invoice = await ctx.prisma.invoice.create({
         data: {
-          ...dataObject,
+          ...input.invoice,
           items: { create: items },
           user: { connect: { id: ctx.session.user.id } },
         },
       });
       return invoice;
     }),
-  // update: protectedProcedure
-  //   .input(InvoiceSchema.partial())
-  //   .mutation(async ({ input, ctx }) => {
-  //     const invoice = await ctx.prisma.invoice.update({
-  //       where: { id: input.id },
-  //       data: ...input,
-  //     });
-  //     return invoice;
-  //   }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        invoice: InvoiceSchema.partial().extend({
+          id: z.string(),
+        }),
+        items: InvoiceItemSchema.extend({
+          id: z.string(),
+        })
+          .array()
+          .optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const invoice = await ctx.prisma.invoice.update({
+        where: { id: input.invoice.id },
+        data: {
+          ...input.invoice,
+          items: {
+            upsert: input.items?.map((item) => ({
+              where: { id: item.id },
+              create: { ...item, amount: Number(item.amount) },
+              update: { ...item, amount: Number(item.amount) },
+            })),
+          },
+        },
+      });
+      return invoice;
+    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
