@@ -12,7 +12,7 @@ const Login: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Invoice</title>
+        <title>Ryan Harman&apos;s Freelance App</title>
         <meta name="description" content="Ree anne herman" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

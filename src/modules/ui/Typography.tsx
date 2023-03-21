@@ -9,7 +9,7 @@ function TypographyH1(props: HeaderProps) {
     <h1
       {...props}
       className={cn(
-        "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl",
+        "scroll-m-20 text-4xl font-bold tracking-tight lg:text-4xl",
         props.className
       )}
     >

@@ -1,5 +1,6 @@
 export * from "./Accordion";
 export * from "./Button";
+export * from "./DropdownMenu";
 export * from "./Input";
 export * from "./Label";
 export * from "./Layout";

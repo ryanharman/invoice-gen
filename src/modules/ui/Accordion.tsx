@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import * as React from "react";
-import { cn } from "~/lib";
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+import { cn } from '~/lib';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -43,7 +43,6 @@ const AccordionTrigger = React.forwardRef<
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));
-
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
 
 const AccordionContent = React.forwardRef<
@@ -61,7 +60,6 @@ const AccordionContent = React.forwardRef<
     <div className="pt-0 pb-4">{children}</div>
   </AccordionPrimitive.Content>
 ));
-
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
