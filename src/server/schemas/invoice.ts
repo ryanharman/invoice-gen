@@ -24,3 +24,7 @@ export const InvoiceSchema = z.object({
 export const InvoiceSchemaWithItems = InvoiceSchema.extend({
   items: z.array(InvoiceItemSchema).optional(),
 });
+
+export const UpdateInvoiceSchema = InvoiceSchema.partial().extend({
+  id: z.string(),
+});

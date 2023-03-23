@@ -33,8 +33,10 @@ export function PdfCreation() {
   async function onSubmit(values: PdfCreationState) {
     await mutateAsync(
       {
-        ...values,
-        status: "created",
+        invoice: {
+          ...values,
+          status: "Draft",
+        },
         items: items.map((item) => ({
           title: item.title,
           amount: item.amount,
@@ -45,7 +47,6 @@ export function PdfCreation() {
           toast({
             title: "Invoice created",
             description: "Your invoice has been created successfully.",
-            duration: 5000,
           });
         },
         onError: () => {

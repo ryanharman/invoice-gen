@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { InvoiceItemSchema, InvoiceSchema } from '~/server/schemas';
+import { InvoiceItemSchema, InvoiceSchema, UpdateInvoiceSchema } from '~/server/schemas';
 
 export const invoicesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -43,9 +43,7 @@ export const invoicesRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        invoice: InvoiceSchema.partial().extend({
-          id: z.string(),
-        }),
+        invoice: UpdateInvoiceSchema,
         items: InvoiceItemSchema.extend({
           id: z.string(),
         })
