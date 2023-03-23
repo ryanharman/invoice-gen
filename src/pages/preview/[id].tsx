@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { api } from '~/lib/api';
 import { Button, InvoicePreview, Layout } from '~/modules';
-import { api } from '~/utils/api';
 
 export default function Preview() {
   const { query } = useRouter();

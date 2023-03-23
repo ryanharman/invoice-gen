@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { cn } from '~/lib';
-import { api } from '~/utils/api';
+import { api } from '~/lib/api';
 import { Invoice } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import {

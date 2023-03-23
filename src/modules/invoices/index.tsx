@@ -1,4 +1,4 @@
-import { api } from '~/utils/api';
+import { api } from '~/lib/api';
 import { Table } from '../table';
 import { useColumns } from './useColumns';
 

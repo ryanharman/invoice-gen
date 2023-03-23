@@ -2,8 +2,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { api } from '~/utils/api';
-import { InvoiceItem } from '../invoicePreview/Table';
+import { api } from '~/lib/api';
+import { InvoiceItemWithKey } from '~/types';
 import {
   Accordion,
   AccordionContent,
@@ -21,8 +21,6 @@ import { InvoiceDetails } from './InvoiceDetails';
 import { InvoiceItems } from './InvoiceItems';
 import { PaymentDetails } from './PaymentDetails';
 import { PaymentTerms } from './PaymentTerms';
-
-export type InvoiceItemWithKey = InvoiceItem & { key: number };
 
 /**
  * When the user is creating a new invoice, this component is used to

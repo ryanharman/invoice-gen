@@ -3,6 +3,7 @@
     "/src/modules/ui",
     "/src/lib",
     "/src/modules",
-    "/src/server/schemas"
+    "/src/server/schemas",
+    "/src/types"
   ]
 }

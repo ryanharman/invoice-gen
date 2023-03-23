@@ -12,10 +12,8 @@ export const Auth = ({
   LoadingComponent,
   required,
 }: AuthProps): JSX.Element | null => {
-  const { status, data } = useSession({ required });
+  const { status } = useSession({ required });
   const { push } = useRouter();
-
-  console.log({ status, data });
 
   // Break early and show children if auth not required
   if (!required) return children;
@@ -31,7 +29,6 @@ export const Auth = ({
 
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   push("/login");
-
   // If the user doesn't have a session, redirect to the login page and render nothing
   return null;
 };

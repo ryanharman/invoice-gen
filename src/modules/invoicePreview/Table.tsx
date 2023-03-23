@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
-
-export type InvoiceItem = {
-  title: string;
-  amount: number;
-};
+import { InvoiceItem } from '~/types';
 
 export type TableProps = {
   items?: InvoiceItem[];

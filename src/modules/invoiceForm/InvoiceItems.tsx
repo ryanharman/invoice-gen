@@ -1,5 +1,5 @@
+import { InvoiceItemWithKey } from '~/types';
 import { Button, Input, Label } from '../ui';
-import { InvoiceItemWithKey } from './';
 
 type Props = {
   items: InvoiceItemWithKey[];

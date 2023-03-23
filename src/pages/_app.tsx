@@ -2,9 +2,9 @@ import '~/styles/globals.css';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { AppType } from 'next/app';
+import { api } from '~/lib/api';
 import { Auth } from '~/modules/auth';
 import { Toaster } from '~/modules/ui/toast/Toaster';
-import { api } from '~/utils/api';
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
