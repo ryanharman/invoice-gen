@@ -1,5 +1,5 @@
-import { useFormContext } from "react-hook-form";
-import { Input, Label } from "../ui";
+import { useFormContext } from 'react-hook-form';
+import { Input, Label } from '../ui';
 
 export function InvoiceDetails({}) {
   const { register } = useFormContext();
@@ -9,7 +9,7 @@ export function InvoiceDetails({}) {
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="invoiceNumber">Invoice Number</Label>
         <Input
-          type="text"
+          type="number"
           inputMode="numeric"
           pattern="[0-9]*"
           id="invoiceNumber"

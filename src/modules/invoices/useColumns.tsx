@@ -4,6 +4,7 @@ import {
   CheckIcon,
   CrosshairIcon,
   DownloadIcon,
+  EditIcon,
   GitPullRequestDraftIcon,
   LifeBuoyIcon,
   PlusIcon,
@@ -52,7 +53,7 @@ export function useColumns() {
             ...invoice,
             customerAddress: "",
             // This is pretty horrid. Might need to rethink having this as a string.
-            invoiceNumber: String(Number(invoice.invoiceNumber) + 1),
+            invoiceNumber: invoice.invoiceNumber,
             status: "Draft",
           },
         },
@@ -158,6 +159,13 @@ export function useColumns() {
               <Button variant="outline">Actions</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
+              <DropdownMenuItem
+                disabled={row.original.status.toLowerCase() === "paid"}
+                onClick={() => push(`/edit/${row.original.id}`)}
+              >
+                <EditIcon className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => duplicateInvoice(row.original)}>
                 <PlusIcon className="mr-2 h-4 w-4" />
                 <span>Duplicate</span>
@@ -238,7 +246,7 @@ export function useColumns() {
         ),
       },
     ],
-    [push, duplicateInvoice]
+    [push, duplicateInvoice, changeStatus, handleDeletion]
   );
   return columns;
 }

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { api } from '~/utils/api';
-import { InvoiceItem } from '../pdfPreview/Table';
+import { InvoiceItem } from '../invoicePreview/Table';
 import {
   Accordion,
   AccordionContent,
@@ -14,7 +15,7 @@ import {
 } from '../ui';
 import { useToast } from '../ui/toast/useToast';
 import { CompanyDetails } from './CompanyDetails';
-import { PdfCreationState } from './context';
+import { InvoiceFormState } from './context';
 import { CustomerDetails } from './CustomerDetails';
 import { InvoiceDetails } from './InvoiceDetails';
 import { InvoiceItems } from './InvoiceItems';
@@ -23,23 +24,41 @@ import { PaymentTerms } from './PaymentTerms';
 
 export type InvoiceItemWithKey = InvoiceItem & { key: number };
 
-export function PdfCreation() {
+/**
+ * When the user is creating a new invoice, this component is used to
+ * create the invoice. The user can edit the invoice details, add items
+ * to the invoice, and then create the invoice. The ID from the URL
+ * is used to fetch the invoice data from the API if editing.
+ */
+export function InvoiceForm() {
+  const { query } = useRouter();
+  const { data } = api.invoices.getById.useQuery(
+    { id: query.id as string },
+    { enabled: !!query.id }
+  );
+  const [items, setItems] = useState<InvoiceItemWithKey[]>(
+    data?.items.map((i, idx) => ({ ...i, key: idx + 1 })) ?? []
+  );
+  const methods = useForm<InvoiceFormState>({
+    // TODO: Fix customer address at some point
+    defaultValues: { ...data, customerAddress: "" },
+  });
+  const { handleSubmit, reset } = methods;
+
   const { mutateAsync } = api.invoices.create.useMutation();
   const { toast } = useToast();
-  const [items, setItems] = useState<InvoiceItemWithKey[]>([]);
-  const methods = useForm<PdfCreationState>();
-  const { handleSubmit } = methods;
 
-  async function onSubmit(values: PdfCreationState) {
+  async function onSubmit(values: InvoiceFormState) {
     await mutateAsync(
       {
         invoice: {
           ...values,
+          invoiceNumber: Number(values.invoiceNumber),
           status: "Draft",
         },
         items: items.map((item) => ({
           title: item.title,
-          amount: item.amount,
+          amount: Number(item.amount),
         })),
       },
       {
@@ -58,6 +77,12 @@ export function PdfCreation() {
       }
     );
   }
+
+  // This is annoying but needed in order for default values to work
+  // with RHF
+  useEffect(() => {
+    if (data) reset();
+  }, [data, reset]);
 
   return (
     <>
@@ -129,8 +154,8 @@ export function PdfCreation() {
           </div>
 
           <div className="mt-8 flex gap-4">
-            <Button type="submit">Create Invoice</Button>
-            <Button variant="subtle">Create Draft</Button>
+            <Button type="submit">Create Draft Invoice</Button>
+            {/* TODO: Preview functionality before draft */}
             <Button variant="link">Preview</Button>
           </div>
         </form>

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 export type InvoiceItem = {
   title: string;
-  amount: string;
+  amount: number;
 };
 
 export type TableProps = {
@@ -11,7 +11,7 @@ export type TableProps = {
 
 export function Table({ items }: TableProps) {
   const amountDue = useMemo(
-    () => items?.reduce((acc, item) => acc + Number(item.amount), 0),
+    () => items?.reduce((acc, item) => acc + item.amount, 0),
     [items]
   );
 

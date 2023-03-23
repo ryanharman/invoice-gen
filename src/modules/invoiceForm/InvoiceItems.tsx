@@ -1,5 +1,5 @@
-import { Button, Input, Label } from "../ui";
-import { InvoiceItemWithKey } from "./";
+import { Button, Input, Label } from '../ui';
+import { InvoiceItemWithKey } from './';
 
 type Props = {
   items: InvoiceItemWithKey[];
@@ -10,13 +10,10 @@ export function InvoiceItems({ items, setItems }: Props) {
   function addItem() {
     if (items.length !== 0) {
       const newItemKey = Math.max(...items.map((item) => item.key)) + 1;
-      setItems((prev) => [
-        ...prev,
-        { key: newItemKey, title: "", amount: String(0) },
-      ]);
+      setItems((prev) => [...prev, { key: newItemKey, title: "", amount: 80 }]);
       return;
     }
-    setItems([{ key: 1, title: "", amount: String(0) }]);
+    setItems([{ key: 1, title: "", amount: 80 }]);
   }
 
   function editInvoiceItem(
@@ -24,8 +21,8 @@ export function InvoiceItems({ items, setItems }: Props) {
     item: InvoiceItemWithKey,
     key: string
   ) {
-    console.log({ items });
     setItems((prev) => {
+      // Remove the previous value and replace it with the new
       const newItems = prev.reduce((acc, curr) => {
         if (curr.key === item.key) {
           return [...acc, { ...curr, [key]: value }];
@@ -49,6 +46,8 @@ export function InvoiceItems({ items, setItems }: Props) {
             <Input
               type="text"
               id="itemTitle"
+              placeholder="API implementation"
+              value={item.title}
               onChange={(e) => editInvoiceItem(e.target.value, item, "title")}
             />
           </div>
@@ -57,6 +56,8 @@ export function InvoiceItems({ items, setItems }: Props) {
             <Input
               type="number"
               id="itemAmount"
+              placeholder="80"
+              value={item.amount}
               onChange={(e) => editInvoiceItem(e.target.value, item, "amount")}
             />
           </div>

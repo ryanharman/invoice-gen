@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import { Layout } from '~/modules';
-import { PdfCreation } from '~/modules/pdfCreation';
+import { InvoiceForm } from '~/modules/invoiceForm';
 
 const Create: NextPage = () => {
   return (
     <Layout title="Create an invoice">
-      <PdfCreation />
+      <InvoiceForm />
     </Layout>
   );
 };

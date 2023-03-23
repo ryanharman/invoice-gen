@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { Button, Layout, PdfPreview } from '~/modules';
+import { Button, InvoicePreview, Layout } from '~/modules';
 import { api } from '~/utils/api';
 
 export default function Preview() {
@@ -26,7 +26,7 @@ export default function Preview() {
         Download as PDF
       </Button>
       <div className="mt-4 max-w-4xl rounded-md border px-6 py-8">
-        <PdfPreview
+        <InvoicePreview
           ref={componentRef}
           header={{
             title: data.companyName,
@@ -54,7 +54,7 @@ export default function Preview() {
           table={{
             items: data.items.map((item) => ({
               title: item.title,
-              amount: String(item.amount),
+              amount: item.amount,
             })),
           }}
         />

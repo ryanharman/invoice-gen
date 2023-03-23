@@ -20,7 +20,7 @@ model Invoice {
   customerName    String
   customerEmail   String
   customerAddress String?
-  invoiceNumber   String
+  invoiceNumber   Int
   invoiceDate     String
   accountName     String
   accountNumber   String

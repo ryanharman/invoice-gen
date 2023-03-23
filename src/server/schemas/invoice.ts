@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const InvoiceItemSchema = z.object({
   title: z.string(),
-  amount: z.string(),
+  amount: z.number(),
 });
 
 export const InvoiceSchema = z.object({
@@ -13,7 +13,7 @@ export const InvoiceSchema = z.object({
   customerName: z.string(),
   customerEmail: z.string(),
   customerAddress: z.string(),
-  invoiceNumber: z.string(),
+  invoiceNumber: z.number(),
   invoiceDate: z.string(),
   accountName: z.string(),
   accountNumber: z.string(),
