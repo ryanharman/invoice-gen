@@ -23,8 +23,8 @@ model Invoice {
   invoiceNumber   Int
   invoiceDate     String
   accountName     String
-  accountNumber   String
-  sortCode        String
+  accountNumber   Int
+  sortCode        Int
   paymentTerms    String
 
   items  InvoiceItem[]
@@ -57,11 +57,11 @@ model UserDefaultInvoiceValues {
   companyEmail   String
   companyAddress String
   accountName    String
-  accountNumber  String
-  sortCode       String
+  accountNumber  Int
+  sortCode       Int
   paymentTerms   String
 
-  userId String
+  userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())

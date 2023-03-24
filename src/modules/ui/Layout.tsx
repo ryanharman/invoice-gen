@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { PlusIcon, SheetIcon } from 'lucide-react';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { cn } from '~/lib';
-import { Button } from './Button';
-import { Typography } from './Typography';
+import { PlusIcon, SheetIcon, TagIcon } from "lucide-react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { cn } from "~/lib";
+import { Button } from "./Button";
+import { Typography } from "./Typography";
 
 type Props = {
   children: React.ReactNode;
@@ -33,15 +33,33 @@ export function Layout({
           <Typography.Large className="text-center">rynvoice</Typography.Large>
           <ul className="mt-4 flex flex-col gap-4">
             <li>
-              <Button variant="link" onClick={() => push("/")}>
+              <Button
+                variant="ghost"
+                onClick={() => push("/")}
+                className="w-full"
+              >
                 <SheetIcon className="mr-2 h-4 w-4" />
                 Invoices
               </Button>
             </li>
             <li>
-              <Button variant="link" onClick={() => push("/create")}>
+              <Button
+                variant="ghost"
+                onClick={() => push("/create")}
+                className="w-full"
+              >
                 <PlusIcon className="mr-2 h-4 w-4" />
                 Create new
+              </Button>
+            </li>
+            <li>
+              <Button
+                variant="ghost"
+                onClick={() => push("/defaults")}
+                className="w-full"
+              >
+                <TagIcon className="mr-2 h-4 w-4" />
+                Defaults
               </Button>
             </li>
           </ul>

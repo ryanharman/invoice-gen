@@ -1,5 +1,6 @@
-import { createTRPCRouter } from '~/server/api/trpc';
-import { invoicesRouter } from './routers/invoices';
+import { createTRPCRouter } from "~/server/api/trpc";
+import { defaultsRouter } from "./routers/defaults";
+import { invoicesRouter } from "./routers/invoices";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { invoicesRouter } from './routers/invoices';
  */
 export const appRouter = createTRPCRouter({
   invoices: invoicesRouter,
+  invoiceDefaults: defaultsRouter,
 });
 
 // export type definition of API

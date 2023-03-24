@@ -1,6 +1,6 @@
-import type { NextPage } from "next";
-import { Invoices, Layout } from '~/modules';
+import { Invoices, Layout } from "~/modules";
 
+import type { NextPage } from "next";
 const Home: NextPage = () => {
   return (
     <Layout title="Invoices">

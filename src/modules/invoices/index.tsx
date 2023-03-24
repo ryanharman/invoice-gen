@@ -1,6 +1,6 @@
-import { api } from '~/lib/api';
-import { Table } from '../table';
-import { useColumns } from './useColumns';
+import { api } from "~/lib/api";
+import { Table } from "../table";
+import { useColumns } from "./useColumns";
 
 export function Invoices() {
   const { data } = api.invoices.getAll.useQuery();
