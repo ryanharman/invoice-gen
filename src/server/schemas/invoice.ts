@@ -11,7 +11,7 @@ export const InvoiceSchema = z
     status: z.string(),
     customerName: z.string(),
     customerEmail: z.string(),
-    customerAddress: z.string(),
+    customerAddress: z.string().optional(),
     invoiceNumber: z.number(),
     invoiceDate: z.string(),
   })

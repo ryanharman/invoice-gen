@@ -5,8 +5,8 @@ export const InvoiceDefaultSchema = z.object({
   companyEmail: z.string(),
   companyAddress: z.string(),
   accountName: z.string(),
-  accountNumber: z.number(),
-  sortCode: z.number(),
+  accountNumber: z.string(),
+  sortCode: z.string(),
   paymentTerms: z.string(),
 });
 

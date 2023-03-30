@@ -127,7 +127,7 @@ export function InvoiceForm() {
           <Input
             {...register("invoiceNumber")}
             id="invoiceNumber"
-            type="number"
+            type="text"
             inputMode="numeric"
             pattern="[0-9]*"
             placeholder="77"
@@ -176,7 +176,7 @@ export function InvoiceForm() {
                 <Label htmlFor="invoiceItemPrice">Price</Label>
                 <Input
                   id="invoiceItemPrice"
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"
                   placeholder="80"

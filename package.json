@@ -23,6 +23,7 @@
     "@trpc/next": "^10.15.0",
     "@trpc/react-query": "^10.15.0",
     "@trpc/server": "^10.15.0",
+    "argon2": "^0.30.3",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",

@@ -23,8 +23,8 @@ model Invoice {
   invoiceNumber   Int
   invoiceDate     String
   accountName     String
-  accountNumber   Int
-  sortCode        Int
+  accountNumber   String
+  sortCode        String
   paymentTerms    String
 
   items  InvoiceItem[]
@@ -57,8 +57,8 @@ model UserDefaultInvoiceValues {
   companyEmail   String
   companyAddress String
   accountName    String
-  accountNumber  Int
-  sortCode       Int
+  accountNumber  String
+  sortCode       String
   paymentTerms   String
 
   userId String @unique

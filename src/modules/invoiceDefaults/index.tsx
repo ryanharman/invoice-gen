@@ -3,24 +3,34 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/lib";
 import { InvoiceDefault } from "~/server/schemas";
-import { Button, Input, Label, Separator, Textarea, Typography } from "../ui";
+import {
+  Button,
+  Input,
+  Label,
+  Separator,
+  Textarea,
+  Typography,
+  useToast,
+} from "../ui";
 
 export function InvoiceDefaults() {
+  const { toast } = useToast();
   const { mutateAsync } = api.invoiceDefaults.upsert.useMutation();
   const { data } = api.invoiceDefaults.getUserDefaults.useQuery();
   const { handleSubmit, reset, register } = useForm<InvoiceDefault>();
 
   async function onSubmit(values: InvoiceDefault) {
+    console.log({ values });
     await mutateAsync(
       {
         ...values,
-        accountNumber: Number(values.accountNumber),
-        sortCode: Number(values.sortCode),
       },
       {
-        onSuccess: () => {
-          console.log("success");
-        },
+        onSuccess: () =>
+          toast({
+            title: "Defaults saved",
+            description: "Your defaults have been saved",
+          }),
       }
     );
   }
@@ -78,9 +88,9 @@ export function InvoiceDefaults() {
           <Input
             {...register("accountNumber")}
             id="accountNumber"
-            type="number"
+            type="text"
             inputMode="numeric"
-            pattern="[0-9]*"
+            pattern="[-+]?[0-9]*[.,]?[0-9]+"
             placeholder="00112233"
           />
         </div>
@@ -89,9 +99,9 @@ export function InvoiceDefaults() {
           <Input
             {...register("sortCode")}
             id="sortCode"
-            type="number"
+            type="text"
             inputMode="numeric"
-            pattern="[0-9]*"
+            pattern="[-+]?[0-9]*[.,]?[0-9]+"
             placeholder="00 11 33"
           />
         </div>
