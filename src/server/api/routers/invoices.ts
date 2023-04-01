@@ -18,7 +18,6 @@ export const invoicesRouter = createTRPCRouter({
     const invoicesWithDecryptedValues = await Promise.all(
       invoices.map((invoice) => decryptPaymentDetails(invoice))
     );
-    console.log({ invoicesWithDecryptedValues });
     return invoicesWithDecryptedValues;
   }),
   getById: protectedProcedure

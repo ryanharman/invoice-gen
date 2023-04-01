@@ -24,7 +24,6 @@ export async function encryptPaymentDetails<T extends Generic>(object: T) {
 export async function decryptPaymentDetails<T extends Generic>(
   object?: T | null
 ) {
-  console.log({ object });
   if (!object) return object;
 
   const result: T = { ...object };
