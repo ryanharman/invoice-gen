@@ -1,13 +1,25 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { InvoiceItemSchema, InvoiceSchema, UpdateInvoiceSchema } from '~/server/schemas';
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  InvoiceItemSchema,
+  InvoiceSchema,
+  UpdateInvoiceSchema,
+} from "~/server/schemas";
+import {
+  decryptPaymentDetails,
+  encryptPaymentDetails,
+} from "~/server/utils/encryptPaymentDetails";
 
 export const invoicesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const invoices = await ctx.prisma.invoice.findMany({
       where: { userId: ctx.session.user.id },
     });
-    return invoices;
+    const invoicesWithDecryptedValues = await Promise.all(
+      invoices.map((invoice) => decryptPaymentDetails(invoice))
+    );
+    console.log({ invoicesWithDecryptedValues });
+    return invoicesWithDecryptedValues;
   }),
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -16,7 +28,8 @@ export const invoicesRouter = createTRPCRouter({
         where: { id: input.id },
         include: { items: true },
       });
-      return invoice;
+      const invoiceWithDecryptedValues = await decryptPaymentDetails(invoice);
+      return invoiceWithDecryptedValues;
     }),
   create: protectedProcedure
     .input(
@@ -31,9 +44,13 @@ export const invoicesRouter = createTRPCRouter({
         amount: Number(item.amount),
       }));
 
+      const invoiceWithEncryptedValues = await encryptPaymentDetails(
+        input.invoice
+      );
+
       const invoice = await ctx.prisma.invoice.create({
         data: {
-          ...input.invoice,
+          ...invoiceWithEncryptedValues,
           items: { create: items },
           user: { connect: { id: ctx.session.user.id } },
         },
@@ -52,10 +69,14 @@ export const invoicesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const invoiceWithEncryptedValues = await encryptPaymentDetails(
+        input.invoice
+      );
+
       const invoice = await ctx.prisma.invoice.update({
         where: { id: input.invoice.id },
         data: {
-          ...input.invoice,
+          ...invoiceWithEncryptedValues,
           items: {
             upsert: input.items?.map((item) => ({
               where: { id: item.id },
