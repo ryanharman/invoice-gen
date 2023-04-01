@@ -21,7 +21,12 @@ export function InvoiceForm() {
   const { data: editableInvoice, isFetched: isInvoiceFetched } =
     api.invoices.getById.useQuery(
       { id: query.id as string },
-      { enabled: isEdit }
+      {
+        enabled: isEdit,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      }
     );
   const { data: invoiceDefaults } =
     api.invoiceDefaults.getUserDefaults.useQuery(undefined, {

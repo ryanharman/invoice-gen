@@ -16,7 +16,11 @@ import {
 export function InvoiceDefaults() {
   const { toast } = useToast();
   const { mutateAsync } = api.invoiceDefaults.upsert.useMutation();
-  const { data } = api.invoiceDefaults.getUserDefaults.useQuery();
+  const { data } = api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
   const { handleSubmit, reset, register } = useForm<InvoiceDefault>();
 
   async function onSubmit(values: InvoiceDefault) {
