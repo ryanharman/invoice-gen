@@ -2,7 +2,7 @@ import "~/styles/globals.css";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { AppType } from "next/app";
-import { cn, fontSans } from "~/lib";
+import { cn } from "~/lib";
 import { api } from "~/lib/api";
 import { ThemeProvider } from "~/modules";
 import { Auth } from "~/modules/auth";
@@ -16,12 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Auth required>
         <ThemeProvider defaultTheme="system" enableSystem attribute="class">
-          <main
-            className={cn(
-              "min-h-screen bg-background font-sans antialiased",
-              fontSans.variable
-            )}
-          >
+          <main className={cn("min-h-screen bg-background antialiased")}>
             <Component {...pageProps} />
             <Toaster />
           </main>

@@ -64,12 +64,19 @@ export function Layout({
               </Button>
             </li>
           </ul>
-          <ThemeToggle />
         </nav>
         <div className="h-full w-full pl-44">
-          <header className={cn("border-b px-8 py-6", headerClassName)}>
-            <Typography.H1>{title}</Typography.H1>
-            {description && <Typography.P>{description}</Typography.P>}
+          <header
+            className={cn(
+              "flex justify-between border-b px-8 py-6",
+              headerClassName
+            )}
+          >
+            <div>
+              <Typography.H1>{title}</Typography.H1>
+              {description && <Typography.P>{description}</Typography.P>}
+            </div>
+            <ThemeToggle />
           </header>
           <main className={cn("h-full w-full px-8 py-4", mainClassName)}>
             {children}

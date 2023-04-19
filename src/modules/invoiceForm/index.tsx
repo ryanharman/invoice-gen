@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/lib/api";
 import { Invoice, UpdateInvoice } from "~/server/schemas";
@@ -28,17 +28,26 @@ export function InvoiceForm() {
         refetchOnReconnect: false,
       }
     );
+
+  // TODO: Have the server handle user defaults.
+  // Show a warning if user defaults don't exist maybe.
   const { data: invoiceDefaults } =
     api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
       enabled: !isEdit,
     });
+  const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
+  const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
+  const { handleSubmit, reset, register } = useForm<Invoice>();
+  const { toast } = useToast();
 
-  const defaultItems = editableInvoice?.items.map((i, idx) => ({
+  const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
+  const invoiceItems = editableInvoice?.items.map((i, idx) => ({
     ...i,
     key: idx + 1,
-  })) ?? [{ key: 0, title: "", amount: 80 }];
-
-  const [items, setItems] = useState<InvoiceItemWithKey[]>(defaultItems);
+  }));
+  const [items, setItems] = useState<InvoiceItemWithKey[]>(
+    invoiceItems ?? defaultItem
+  );
 
   function addItem() {
     if (items.length !== 0) {
@@ -69,12 +78,6 @@ export function InvoiceForm() {
   function removeItem(item: InvoiceItemWithKey) {
     setItems((prev) => prev.filter((i) => i.key !== item.key));
   }
-
-  const { handleSubmit, reset, register } = useForm<Invoice>();
-
-  const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
-  const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
-  const { toast } = useToast();
 
   async function create(invoice: Invoice) {
     await createInvoice(
@@ -156,6 +159,16 @@ export function InvoiceForm() {
     }
   }, [reset, editableInvoice, isInvoiceFetched]);
 
+  useEffect(() => {
+    if (isInvoiceFetched && invoiceItems) {
+      // Somewhat sloppy but works for now.
+      // TODO: Revisit this
+      if (JSON.stringify(items) === JSON.stringify(defaultItem)) {
+        setItems(invoiceItems);
+      }
+    }
+  }, [isInvoiceFetched, invoiceItems, items, defaultItem]);
+
   return (
     <form
       id="invoice-form"
@@ -204,7 +217,7 @@ export function InvoiceForm() {
       <Separator />
       <Typography.Large>Items</Typography.Large>
       <div>
-        {items.map((item) => (
+        {items?.map((item) => (
           <Fragment key={item.key}>
             <div className="flex items-center gap-4">
               <div className="grow">
@@ -260,7 +273,7 @@ export function InvoiceForm() {
       </div>
       <div>
         <Button id="submit-button" form="invoice-form" type="submit">
-          Create draft invoice
+          {isEdit ? "Update invoice" : "Create invoice"}
         </Button>
       </div>
     </form>

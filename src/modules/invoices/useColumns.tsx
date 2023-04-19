@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { format, isValid } from 'date-fns';
+import { format, isValid } from "date-fns";
 import {
   CheckIcon,
   CrosshairIcon,
@@ -10,13 +10,13 @@ import {
   PlusIcon,
   SearchIcon,
   TrashIcon,
-} from 'lucide-react';
-import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
-import { cn } from '~/lib';
-import { api } from '~/lib/api';
-import { Invoice } from '@prisma/client';
-import { ColumnDef } from '@tanstack/react-table';
+} from "lucide-react";
+import { useRouter } from "next/router";
+import { useCallback, useMemo } from "react";
+import { cn } from "~/lib";
+import { api } from "~/lib/api";
+import { Invoice } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   Button,
   DropdownMenu,
@@ -29,8 +29,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   useToast,
-} from '../ui';
-import { StatusPill } from './StatusPill';
+} from "../ui";
+import { StatusPill } from "./StatusPill";
 
 type ChangeStatusParams = {
   status: "Paid" | "Unpaid" | "Draft";
@@ -118,7 +118,7 @@ export function useColumns() {
         header: "Invoice Number",
         accessorKey: "invoiceNumber",
         cell: ({ row }) => (
-          <div className="font-medium text-slate-400">
+          <div className="font-medium text-muted-foreground">
             #{row.original.invoiceNumber}
           </div>
         ),
