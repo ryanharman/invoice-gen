@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { cn } from "~/lib";
 import { Button } from "./Button";
+import { ThemeToggle } from "./ThemeToggle";
 import { Typography } from "./Typography";
 
 type Props = {
@@ -29,7 +30,7 @@ export function Layout({
         <title>{title}</title>
       </Head>
       <div className="max-w-screen">
-        <nav className="fixed min-h-screen w-44 border-r bg-slate-100 px-4 py-2">
+        <nav className="fixed min-h-screen w-44 border-r px-4 py-2">
           <Typography.Large className="text-center">rynvoice</Typography.Large>
           <ul className="mt-4 flex flex-col gap-4">
             <li>
@@ -63,6 +64,7 @@ export function Layout({
               </Button>
             </li>
           </ul>
+          <ThemeToggle />
         </nav>
         <div className="h-full w-full pl-44">
           <header className={cn("border-b px-8 py-6", headerClassName)}>

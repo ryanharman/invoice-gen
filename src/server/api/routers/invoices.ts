@@ -23,7 +23,7 @@ export const invoicesRouter = createTRPCRouter({
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
-      const invoice = await ctx.prisma.invoice.findUnique({
+      const invoice = await ctx.prisma.invoice.findUniqueOrThrow({
         where: { id: input.id },
         include: { items: true },
       });

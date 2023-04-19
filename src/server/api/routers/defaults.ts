@@ -7,9 +7,10 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const defaultsRouter = createTRPCRouter({
   getUserDefaults: protectedProcedure.query(async ({ ctx }) => {
-    const defaults = await ctx.prisma.userDefaultInvoiceValues.findUnique({
-      where: { userId: ctx.session.user.id },
-    });
+    const defaults =
+      await ctx.prisma.userDefaultInvoiceValues.findUniqueOrThrow({
+        where: { userId: ctx.session.user.id },
+      });
     const defaultsWithDecryptedValues = await decryptPaymentDetails(defaults);
     return defaultsWithDecryptedValues;
   }),

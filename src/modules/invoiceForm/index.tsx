@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/lib/api";
-import { Invoice } from "~/server/schemas";
+import { Invoice, UpdateInvoice } from "~/server/schemas";
 import { InvoiceItemWithKey } from "~/types";
 import { Button, Input, Label, Separator, Typography } from "../ui";
 import { useToast } from "../ui/toast/useToast";
@@ -72,16 +72,17 @@ export function InvoiceForm() {
 
   const { handleSubmit, reset, register } = useForm<Invoice>();
 
-  const { mutateAsync } = api.invoices.create.useMutation();
+  const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
+  const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
   const { toast } = useToast();
 
-  async function onSubmit(values: Invoice) {
-    await mutateAsync(
+  async function create(invoice: Invoice) {
+    await createInvoice(
       {
         invoice: {
           ...invoiceDefaults,
-          ...values,
-          invoiceNumber: Number(values.invoiceNumber),
+          ...invoice,
+          invoiceNumber: Number(invoice.invoiceNumber),
           status: "Draft",
         },
         items: items.map((item) => ({
@@ -104,6 +105,47 @@ export function InvoiceForm() {
         },
       }
     );
+  }
+
+  async function update(invoice: UpdateInvoice) {
+    await updateInvoice(
+      {
+        invoice: {
+          ...invoiceDefaults,
+          ...invoice,
+          invoiceNumber: Number(invoice.invoiceNumber),
+        },
+        items: items.map((item) => ({
+          id: item.id ?? "",
+          title: item.title,
+          amount: Number(item.amount),
+        })),
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Invoice updated",
+            description: "Your invoice has been updated successfully.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Error",
+            description: "There was an error updating your invoice.",
+          });
+        },
+      }
+    );
+  }
+
+  // TODO: Type guards
+  async function onSubmit(values: Invoice | UpdateInvoice) {
+    if (isEdit) {
+      await update(values as UpdateInvoice);
+      return;
+    }
+
+    await create(values as Invoice);
   }
 
   // This is annoying but needed in order for default values to work

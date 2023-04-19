@@ -21,10 +21,8 @@ export async function encryptPaymentDetails<T extends Generic>(object: T) {
   return result;
 }
 
-export async function decryptPaymentDetails<T extends Generic>(
-  object?: T | null
-) {
-  if (!object) return object;
+export async function decryptPaymentDetails<T extends Generic>(object: T) {
+  if (!object || object.length === 0) return object;
 
   const result: T = { ...object };
   if (result.sortCode) {

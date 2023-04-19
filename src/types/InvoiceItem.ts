@@ -1,4 +1,5 @@
 export type InvoiceItem = {
+  id?: string;
   title: string;
   amount: number;
 };
