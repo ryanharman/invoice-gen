@@ -34,7 +34,7 @@ export function Table<T extends Record<string, unknown>>({
               <th
                 key={header.id}
                 className={cn(
-                  "border-b-2 px-4 py-4 text-left text-sm font-semibold uppercase text-primary",
+                  "border-b-2 px-4 py-4 text-left text-sm font-semibold uppercase",
                   "[&:first-child]:rounded-l-lg [&:last-child]:rounded-r-lg",
                   "[&:first-child]:pl-8 [&:last-child]:pr-8"
                 )}
@@ -60,7 +60,7 @@ export function Table<T extends Record<string, unknown>>({
               <td
                 key={cell.id}
                 className={cn(
-                  "px-4 py-3 text-left text-primary",
+                  "px-4 py-3 text-left",
                   "[&:first-child]:pl-8 [&:last-child]:pr-8"
                 )}
               >

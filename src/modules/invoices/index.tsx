@@ -41,7 +41,9 @@ export function Invoices() {
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-8">
           <Typography.H3>No invoices found</Typography.H3>
-          <Button variant="secondary">Create an invoice</Button>
+          <Button variant="secondary" onClick={createInvoice}>
+            Create an invoice
+          </Button>
         </div>
       )}
     </>

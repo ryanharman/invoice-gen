@@ -52,7 +52,6 @@ export function useColumns() {
           invoice: {
             ...invoice,
             customerAddress: "",
-            // This is pretty horrid. Might need to rethink having this as a string.
             invoiceNumber: invoice.invoiceNumber,
             status: "Draft",
           },
@@ -131,7 +130,6 @@ export function useColumns() {
         header: "Invoice Date",
         accessorKey: "invoiceDate",
         cell: ({ row }) => {
-          // return "Test";
           if (!isValid(new Date(row.original.invoiceDate))) return null;
           return (
             <>{format(new Date(row.original.invoiceDate), "dd MMM yyyy")}</>

@@ -1,10 +1,10 @@
 /* eslint-disable react/display-name */
-import { forwardRef } from 'react';
-import { Contact, ContactProps } from './Contact';
-import { Header, HeaderProps } from './Header';
-import { PaymentDetailProps, PaymentDetails } from './PaymentDetails';
-import { PaymentTerms } from './PaymentTerms';
-import { Table, TableProps } from './Table';
+import { forwardRef } from "react";
+import { Contact, ContactProps } from "./Contact";
+import { Header, HeaderProps } from "./Header";
+import { PaymentDetailProps, PaymentDetails } from "./PaymentDetails";
+import { PaymentTerms } from "./PaymentTerms";
+import { Table, TableProps } from "./Table";
 
 type Props = {
   header: HeaderProps;

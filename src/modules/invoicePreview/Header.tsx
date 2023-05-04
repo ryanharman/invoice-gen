@@ -1,7 +1,9 @@
+import { format } from "date-fns";
+
 export type HeaderProps = {
   title: string | React.ReactNode;
   number: number;
-  date: string;
+  date: Date;
 };
 
 export function Header({ title, number, date }: HeaderProps) {
@@ -12,7 +14,9 @@ export function Header({ title, number, date }: HeaderProps) {
         <h2 className=" text-2xl font-semibold text-gray-700">
           Invoice #{number}
         </h2>
-        <div className="text-xl font-medium text-gray-500">{date}</div>
+        <div className="text-xl font-medium text-gray-500">
+          {format(date, "dd/MM/yyyy")}
+        </div>
       </div>
     </header>
   );
