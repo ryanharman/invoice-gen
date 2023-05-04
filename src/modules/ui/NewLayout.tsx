@@ -46,12 +46,12 @@ export function NewLayout({ children, classNames }: Props) {
           >
             Defaults
           </Link>
-          <Link
+          {/* <Link
             href="/expenses"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             Expenses
-          </Link>
+          </Link> */}
         </nav>
 
         <ThemeToggle />

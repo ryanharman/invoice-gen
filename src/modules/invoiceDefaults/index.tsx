@@ -11,7 +11,6 @@ import {
   CardTitle,
   Input,
   Label,
-  Separator,
   Textarea,
   Typography,
   useToast,
@@ -51,7 +50,7 @@ export function InvoiceDefaults() {
       <Typography.H1 className="mb-8">Company defaults</Typography.H1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-2 gap-4"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2"
       >
         <Card>
           <CardHeader>
