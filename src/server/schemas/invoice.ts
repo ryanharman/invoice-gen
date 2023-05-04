@@ -13,7 +13,7 @@ export const InvoiceSchema = z
     customerEmail: z.string(),
     customerAddress: z.string().optional(),
     invoiceNumber: z.number(),
-    invoiceDate: z.string(),
+    invoiceDate: z.date(),
   })
   .merge(InvoiceDefaultSchema);
 

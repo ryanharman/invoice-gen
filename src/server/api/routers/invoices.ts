@@ -70,7 +70,7 @@ export const invoicesRouter = createTRPCRouter({
       z.object({
         invoice: UpdateInvoiceSchema,
         items: InvoiceItemSchema.extend({
-          id: z.string(),
+          id: z.string().optional(),
         })
           .array()
           .optional(),
@@ -83,17 +83,32 @@ export const invoicesRouter = createTRPCRouter({
 
       const invoice = await ctx.prisma.invoice.update({
         where: { id: input.invoice.id },
-        data: {
-          ...invoiceWithEncryptedValues,
-          items: {
-            upsert: input.items?.map((item) => ({
-              where: { id: item.id },
-              create: { ...item, amount: Number(item.amount) },
-              update: { ...item, amount: Number(item.amount) },
-            })),
-          },
-        },
+        data: invoiceWithEncryptedValues,
       });
+
+      if (!input.items) return invoice;
+
+      // Upserts are cringe anyways who cares if
+      // prisma doesn't properly support them!!
+      // (or am i too stupid to use them right?)
+      await Promise.all(
+        input.items?.map(async (item) => {
+          if (item.id) {
+            return await ctx.prisma.invoiceItem.update({
+              where: { id: item.id },
+              data: { ...item, amount: Number(item.amount) },
+            });
+          }
+          return await ctx.prisma.invoiceItem.create({
+            data: {
+              ...item,
+              amount: Number(item.amount),
+              invoiceId: invoice.id,
+            },
+          });
+        })
+      );
+
       return invoice;
     }),
   delete: protectedProcedure

@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Invoice {
-  id              String  @id @default(cuid())
+  id              String   @id @default(cuid())
   status          String
   companyName     String
   companyEmail    String
@@ -21,7 +21,7 @@ model Invoice {
   customerEmail   String
   customerAddress String?
   invoiceNumber   Int
-  invoiceDate     String
+  invoiceDate     DateTime
   accountName     String
   accountNumber   String
   sortCode        String
@@ -38,7 +38,7 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id     String @id @default(cuid())
+  id     String @id @unique @default(cuid())
   title  String
   amount Int
 

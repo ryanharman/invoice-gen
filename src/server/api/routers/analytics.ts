@@ -32,7 +32,7 @@ export const analyticsRouter = createTRPCRouter({
       const selectedMonthInvoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: { gte: filterBy, lt: add(filterBy, { months: 1 }) },
+          invoiceDate: { gte: filterBy, lt: add(filterBy, { months: 1 }) },
         },
         include: { items: true },
       });
@@ -41,7 +41,7 @@ export const analyticsRouter = createTRPCRouter({
       const previousMonthInvoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: sub(filterBy, { months: 1 }),
             lt: filterBy,
           },
@@ -73,7 +73,7 @@ export const analyticsRouter = createTRPCRouter({
       const invoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: filterBy,
             lt: add(filterBy, { months: 1 }),
           },
@@ -94,7 +94,7 @@ export const analyticsRouter = createTRPCRouter({
       const previousMonthInvoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: sub(filterBy, { months: 1 }),
             lt: filterBy,
           },
@@ -115,7 +115,7 @@ export const analyticsRouter = createTRPCRouter({
     const invoices = await ctx.prisma.invoice.findMany({
       where: {
         userId: ctx.session.user.id,
-        createdAt: {
+        invoiceDate: {
           gte: startOfYear(new Date()),
         },
       },
@@ -123,7 +123,7 @@ export const analyticsRouter = createTRPCRouter({
     });
 
     const monthlyTotals = invoices.reduce((acc, invoice) => {
-      const month = format(invoice.createdAt, "MMM");
+      const month = format(invoice.invoiceDate, "MMM");
       const total = calculateInvoiceTotal([invoice]);
       return { ...acc, [month]: (acc[month] ?? 0) + total };
     }, {} as Record<string, number>);
@@ -140,7 +140,7 @@ export const analyticsRouter = createTRPCRouter({
       const invoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: filterBy,
             lt: add(filterBy, { months: 1 }),
           },
@@ -150,8 +150,9 @@ export const analyticsRouter = createTRPCRouter({
       const previousMonthInvoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: sub(filterBy, { months: 1 }),
+            lt: filterBy,
           },
         },
       });
@@ -167,7 +168,7 @@ export const analyticsRouter = createTRPCRouter({
       const invoices = await ctx.prisma.invoice.findMany({
         where: {
           userId: ctx.session.user.id,
-          createdAt: {
+          invoiceDate: {
             gte: filterBy,
             lt: add(filterBy, { months: 1 }),
           },

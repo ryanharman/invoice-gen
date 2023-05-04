@@ -11,6 +11,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  DatePicker,
   Input,
   Label,
   Separator,
@@ -46,7 +47,8 @@ export function InvoiceForm() {
     });
   const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
   const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
-  const { handleSubmit, reset, register } = useForm<Invoice>();
+  const { handleSubmit, reset, register, setValue, getValues } =
+    useForm<Invoice>();
   const { toast } = useToast();
 
   const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
@@ -55,7 +57,7 @@ export function InvoiceForm() {
     key: idx + 1,
   }));
   const [items, setItems] = useState<InvoiceItemWithKey[]>(
-    invoiceItems ?? defaultItem
+    invoiceItems?.length ? invoiceItems : defaultItem
   );
 
   function addItem() {
@@ -127,11 +129,10 @@ export function InvoiceForm() {
           ...invoice,
           invoiceNumber: Number(invoice.invoiceNumber),
         },
-        items: items.map((item) => ({
-          id: item.id ?? "",
-          title: item.title,
-          amount: Number(item.amount),
-        })),
+        items: items.map((item) => {
+          if (item.id) return { ...item, amount: Number(item.amount) };
+          return { title: item.title, amount: Number(item.amount) };
+        }),
       },
       {
         onSuccess: () => {
@@ -160,6 +161,12 @@ export function InvoiceForm() {
     await create(values as Invoice);
   }
 
+  function onDayClick(day?: Date) {
+    console.log({ day });
+    if (!day) return;
+    setValue("invoiceDate", day);
+  }
+
   // This is annoying but needed in order for default values to work
   // with RHF
   useEffect(() => {
@@ -169,7 +176,7 @@ export function InvoiceForm() {
   }, [reset, editableInvoice, isInvoiceFetched]);
 
   useEffect(() => {
-    if (isInvoiceFetched && invoiceItems) {
+    if (isInvoiceFetched && invoiceItems?.length) {
       // Somewhat sloppy but works for now.
       // TODO: Revisit this
       if (JSON.stringify(items) === JSON.stringify(defaultItem)) {
@@ -177,6 +184,12 @@ export function InvoiceForm() {
       }
     }
   }, [isInvoiceFetched, invoiceItems, items, defaultItem]);
+
+  console.log({ editableInvoice });
+
+  const invoiceDate = getValues("invoiceDate");
+
+  console.log(getValues("invoiceDate"));
 
   return (
     <>
@@ -197,11 +210,19 @@ export function InvoiceForm() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="invoiceDate">Invoice issue date</Label>
-                <Input
+                <DatePicker
+                  id="invoiceDate"
+                  defaultValue={invoiceDate ? new Date(invoiceDate) : undefined}
+                  selected={invoiceDate ? new Date(invoiceDate) : undefined}
+                  // selected={new Date(getValues("invoiceDate") ?? undefined)}
+                  onSelect={onDayClick}
+                  required
+                />
+                {/* <Input
                   {...register("invoiceDate")}
                   id="invoiceDate"
                   type="date"
-                />
+                /> */}
               </div>
               <div>
                 <Label htmlFor="invoiceNumber">Invoice number</Label>

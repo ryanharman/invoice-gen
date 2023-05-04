@@ -83,7 +83,7 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                £{average?.averageInvoice}
+                £{Math.round(average?.averageInvoice ?? 0)}
               </div>
               <p className="text-xs font-medium text-muted-foreground">
                 £{Math.round(average?.trend ?? 0)} variation from last month
@@ -100,7 +100,8 @@ export function Dashboard() {
             <CardContent>
               <div className="text-2xl font-bold">{monthlyInvoices?.total}</div>
               <p className="text-xs font-medium text-muted-foreground">
-                {Math.round(monthlyInvoices?.trend ?? 0)} from last month
+                {Math.round(monthlyInvoices?.trend ?? 0)} variation from last
+                month
               </p>
             </CardContent>
           </Card>
