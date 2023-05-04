@@ -10,28 +10,40 @@ export function Invoices() {
   const { data } = api.invoices.getAll.useQuery();
   const columns = useColumns();
 
-  if (!data) {
-    return (
-      <div className="flex flex-col gap-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-8 w-full" />
-        <Skeleton className="h-8 w-full" />
-        <Skeleton className="h-8 w-full" />
-      </div>
-    );
-  }
-
   async function createInvoice() {
     await push("/create");
   }
 
+  if (!data) {
+    return (
+      <>
+        <div className="flex items-center justify-between">
+          <Typography.H1 className="mb-8">Invoices</Typography.H1>
+          <Button onClick={createInvoice}>Create an invoice</Button>
+        </div>
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+        </div>
+      </>
+    );
+  }
+
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between">
         <Typography.H1 className="mb-8">Invoices</Typography.H1>
-        <Button onClick={createInvoice}>Create invoice</Button>
+        <Button onClick={createInvoice}>Create an invoice</Button>
       </div>
       <Table data={data} columns={columns} />
-    </div>
+      {data.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-8">
+          <Typography.H3>No invoices found</Typography.H3>
+          <Button variant="secondary">Create an invoice</Button>
+        </div>
+      )}
+    </>
   );
 }

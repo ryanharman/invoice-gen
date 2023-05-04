@@ -20,7 +20,6 @@ function useOurSession({ redirectLink = "/login", required = true }: Props) {
     refetchOnReconnect: true,
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSettled: async (data) => {
-      console.log({ data });
       if (data != null || !required) return;
       await push(redirectLink);
     },

@@ -162,7 +162,6 @@ export function InvoiceForm() {
   }
 
   function onDayClick(day?: Date) {
-    console.log({ day });
     if (!day) return;
     setValue("invoiceDate", day);
   }
@@ -185,11 +184,7 @@ export function InvoiceForm() {
     }
   }, [isInvoiceFetched, invoiceItems, items, defaultItem]);
 
-  console.log({ editableInvoice });
-
   const invoiceDate = getValues("invoiceDate");
-
-  console.log(getValues("invoiceDate"));
 
   return (
     <>
