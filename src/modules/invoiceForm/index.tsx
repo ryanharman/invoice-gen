@@ -217,46 +217,48 @@ export function InvoiceForm() {
       <Separator />
       <Typography.Large>Items</Typography.Large>
       <div>
-        {items?.map((item) => (
-          <Fragment key={item.key}>
-            <div className="flex items-center gap-4">
-              <div className="grow">
-                <Label htmlFor="invoiceItem">Item</Label>
-                <Input
-                  type="text"
-                  id="invoiceItem"
-                  placeholder="Meeting"
-                  value={item.title}
-                  onChange={(e) =>
-                    editInvoiceItem(e.target.value, item, "title")
-                  }
-                />
+        <div className="mb-2 grid gap-4">
+          {items?.map((item) => (
+            <Fragment key={item.key}>
+              <div className="flex items-center gap-4">
+                <div className="grow">
+                  <Label htmlFor="invoiceItem">Item</Label>
+                  <Input
+                    type="text"
+                    id="invoiceItem"
+                    placeholder="Meeting"
+                    value={item.title}
+                    onChange={(e) =>
+                      editInvoiceItem(e.target.value, item, "title")
+                    }
+                  />
+                </div>
+                <div className="w-28">
+                  <Label htmlFor="invoiceItemPrice">Price</Label>
+                  <Input
+                    id="invoiceItemPrice"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="80"
+                    value={item.amount}
+                    onChange={(e) =>
+                      editInvoiceItem(e.target.value, item, "amount")
+                    }
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-6 px-2"
+                  onClick={() => removeItem(item)}
+                >
+                  <MinusIcon className="h-4 w-4" />
+                </Button>
               </div>
-              <div className="w-28">
-                <Label htmlFor="invoiceItemPrice">Price</Label>
-                <Input
-                  id="invoiceItemPrice"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="80"
-                  value={item.amount}
-                  onChange={(e) =>
-                    editInvoiceItem(e.target.value, item, "amount")
-                  }
-                />
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-6 px-2"
-                onClick={() => removeItem(item)}
-              >
-                <MinusIcon className="h-4 w-4" />
-              </Button>
-            </div>
-          </Fragment>
-        ))}
+            </Fragment>
+          ))}
+        </div>
         <div className="flex items-center justify-between">
           <Button
             type="button"

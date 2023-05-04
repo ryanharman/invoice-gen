@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { PlusIcon, SheetIcon, TagIcon } from "lucide-react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { cn } from "~/lib";
-import { Button } from "./Button";
-import { ThemeToggle } from "./ThemeToggle";
-import { Typography } from "./Typography";
+import { PlusIcon, PoundSterlingIcon, SheetIcon, TagIcon } from 'lucide-react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { cn } from '~/lib';
+import { Button } from './Button';
+import { ThemeToggle } from './ThemeToggle';
+import { Typography } from './Typography';
 
 type Props = {
   children: React.ReactNode;
@@ -61,6 +61,16 @@ export function Layout({
               >
                 <TagIcon className="mr-2 h-4 w-4" />
                 Defaults
+              </Button>
+            </li>
+            <li>
+              <Button
+                variant="ghost"
+                onClick={() => push("/expenses")}
+                className="w-full"
+              >
+                <PoundSterlingIcon className="mr-2 h-4 w-4" />
+                Expenses
               </Button>
             </li>
           </ul>

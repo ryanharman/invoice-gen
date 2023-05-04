@@ -11,15 +11,24 @@ import {
 } from "~/server/utils/encryptPaymentDetails";
 
 export const invoicesRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const invoices = await ctx.prisma.invoice.findMany({
-      where: { userId: ctx.session.user.id },
-    });
-    const invoicesWithDecryptedValues = await Promise.all(
-      invoices.map((invoice) => decryptPaymentDetails(invoice))
-    );
-    return invoicesWithDecryptedValues;
-  }),
+  getAll: protectedProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().optional(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const invoices = await ctx.prisma.invoice.findMany({
+        where: { userId: ctx.session.user.id },
+        take: input?.limit,
+      });
+      const invoicesWithDecryptedValues = await Promise.all(
+        invoices.map((invoice) => decryptPaymentDetails(invoice))
+      );
+      return invoicesWithDecryptedValues;
+    }),
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {

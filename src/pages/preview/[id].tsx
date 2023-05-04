@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
-import { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
-import { api } from '~/lib/api';
-import { Button, InvoicePreview, Layout } from '~/modules';
+import { useRouter } from "next/router";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { api } from "~/lib/api";
+import { Button, InvoicePreview, Layout } from "~/modules";
 
 export default function Preview() {
   const { query } = useRouter();
@@ -21,7 +21,7 @@ export default function Preview() {
   }
 
   return (
-    <Layout title="Preview" mainClassName="">
+    <Layout title={`Invoice ${data.invoiceNumber}`} mainClassName="">
       <Button variant="outline" onClick={handlePrint}>
         Download as PDF
       </Button>

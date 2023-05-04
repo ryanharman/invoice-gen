@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { format, isValid } from "date-fns";
+import { isValid } from "date-fns";
 import {
   CheckIcon,
   CrosshairIcon,
@@ -131,10 +131,12 @@ export function useColumns() {
         header: "Invoice Date",
         accessorKey: "invoiceDate",
         cell: ({ row }) => {
-          if (!isValid(new Date(row.original.invoiceDate))) return null;
-          return (
-            <>{format(new Date(row.original.invoiceDate), "dd MMM yyyy")}</>
-          );
+          // return "Test";
+          // if (!isValid(new Date(row.original.invoiceDate))) return null;
+          // return (
+          //   <>{format(new Date(row.original.invoiceDate), "dd MMM yyyy")}</>
+          // );
+          return "test";
         },
       },
       {
