@@ -14,6 +14,7 @@ export const Auth = ({
 }: AuthProps): JSX.Element | null => {
   const { push, pathname } = useRouter();
   const actualRequired = required && pathname !== "/login";
+
   const { status } = useSession({ required: actualRequired });
 
   // Break early and show children if auth not required

@@ -1,18 +1,20 @@
 import { Code, Github, LoaderIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { cn } from "~/lib";
-import { Button, buttonVariants } from "../ui";
+import { Button } from "../ui";
 
 export function Login() {
+  const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   async function onGitHubLogin() {
     setIsLoading(true);
-    await signIn("github", {
-      callbackUrl: `/`,
-    });
+    const signInResult = await signIn("github");
+    if (signInResult?.error) {
+      setIsLoading(false);
+    }
+    await push("/");
   }
 
   return (
