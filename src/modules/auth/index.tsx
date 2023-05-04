@@ -1,5 +1,5 @@
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type AuthProps = {
   children: JSX.Element;
@@ -12,11 +12,12 @@ export const Auth = ({
   LoadingComponent,
   required,
 }: AuthProps): JSX.Element | null => {
-  const { status } = useSession({ required });
-  const { push } = useRouter();
+  const { push, pathname } = useRouter();
+  const actualRequired = required && pathname !== "/login";
+  const { status } = useSession({ required: actualRequired });
 
   // Break early and show children if auth not required
-  if (!required) return children;
+  if (!actualRequired) return children;
 
   if (status === "loading") {
     return LoadingComponent ? <LoadingComponent /> : <div />;

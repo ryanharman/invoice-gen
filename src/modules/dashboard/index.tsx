@@ -1,7 +1,4 @@
-import { startOfMonth } from "date-fns";
 import { AxeIcon, FileIcon, PoundSterlingIcon, UsersIcon } from "lucide-react";
-import { useState } from "react";
-import { api } from "~/lib";
 import {
   Avatar,
   AvatarFallback,
@@ -14,24 +11,18 @@ import {
   Typography,
 } from "../ui";
 import { Overview } from "./OverviewChart";
+import { useAnalytics } from "./useAnalytics";
 
 export function Dashboard() {
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    startOfMonth(new Date())
-  );
-  const { data } = api.invoices.getAll.useQuery({ limit: 15 });
-  const { data: revenue } = api.analytics.revenue.useQuery({
-    date: selectedDate,
-  });
-  const { data: average } = api.analytics.averageInvoice.useQuery({
-    date: selectedDate,
-  });
-  const { data: monthlyInvoices } = api.analytics.totalMonthlyInvoices.useQuery(
-    { date: selectedDate }
-  );
-  const { data: totalUnpaid } = api.analytics.totalUnpaidInvoices.useQuery({
-    date: selectedDate,
-  });
+  const {
+    selectedDate,
+    setSelectedDate,
+    revenue,
+    average,
+    monthlyInvoices,
+    totalUnpaid,
+    invoices,
+  } = useAnalytics();
 
   function onDayClick(day: Date) {
     setSelectedDate(day);
@@ -41,7 +32,7 @@ export function Dashboard() {
     <>
       <div className="mb-8 flex items-center justify-between">
         <Typography.H1>Dashboard</Typography.H1>
-        <DatePicker onDayClick={onDayClick} />
+        <DatePicker onDayClick={onDayClick} selected={selectedDate} />
       </div>
 
       <div className="space-y-4">
@@ -122,7 +113,7 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-10 overflow-y-auto">
-                {data?.map((invoice) => (
+                {invoices?.map((invoice) => (
                   <div key={invoice.id} className="flex items-center">
                     <Avatar className="h-9 w-9">
                       <AvatarImage
