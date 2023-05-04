@@ -83,7 +83,7 @@ export function Overview() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value: string) => `$${value}`}
+          tickFormatter={(value: string) => `£${value}`}
         />
         <Bar dataKey="total" fill="#841dfa" radius={[4, 4, 0, 0]} />
       </BarChart>

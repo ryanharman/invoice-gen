@@ -1,9 +1,9 @@
-import { InvoiceDefaults, Layout } from "~/modules";
+import { InvoiceDefaults, NewLayout } from "~/modules";
 
 export default function Defaults() {
   return (
-    <Layout title="Invoice defaults">
+    <NewLayout>
       <InvoiceDefaults />
-    </Layout>
+    </NewLayout>
   );
 }

@@ -1,13 +1,13 @@
-import { Invoices, Layout } from "~/modules";
-
 import type { NextPage } from "next";
+import { NewLayout } from "~/modules";
+import { Dashboard } from "~/modules/dashboard";
 
-const Home: NextPage = () => {
+const DashboardPage: NextPage = () => {
   return (
-    <Layout title="Invoices">
-      <Invoices />
-    </Layout>
+    <NewLayout>
+      <Dashboard />
+    </NewLayout>
   );
 };
 
-export default Home;
+export default DashboardPage;

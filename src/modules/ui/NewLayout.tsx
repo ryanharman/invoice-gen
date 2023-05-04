@@ -29,7 +29,7 @@ export function NewLayout({ children, classNames }: Props) {
         >
           <Typography.Large>Rynvoice</Typography.Large>
           <Link
-            href="/dashboard"
+            href="/"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             Dashboard

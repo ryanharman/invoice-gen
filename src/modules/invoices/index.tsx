@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { useRouter } from "next/router";
 import { api } from "~/lib/api";
 import { Table } from "../table";
-import { Skeleton } from "../ui";
+import { Button, Skeleton, Typography } from "../ui";
 import { useColumns } from "./useColumns";
 
 export function Invoices() {
+  const { push } = useRouter();
   const { data } = api.invoices.getAll.useQuery();
   const columns = useColumns();
 
@@ -18,8 +21,16 @@ export function Invoices() {
     );
   }
 
+  async function createInvoice() {
+    await push("/create");
+  }
+
   return (
     <div>
+      <div className="flex items-center justify-between">
+        <Typography.H1 className="mb-8">Invoices</Typography.H1>
+        <Button onClick={createInvoice}>Create invoice</Button>
+      </div>
       <Table data={data} columns={columns} />
     </div>
   );

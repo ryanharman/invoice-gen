@@ -160,4 +160,27 @@ export const analyticsRouter = createTRPCRouter({
         trend: invoices.length - previousMonthInvoices.length,
       };
     }),
+  totalUnpaidInvoices: protectedProcedure
+    .input(defaultInputZod)
+    .query(async ({ ctx, input }) => {
+      const filterBy = input?.date ?? defaultStartDate;
+      const invoices = await ctx.prisma.invoice.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          createdAt: {
+            gte: filterBy,
+            lt: add(filterBy, { months: 1 }),
+          },
+          status: "UNPAID",
+        },
+        include: { items: true },
+      });
+
+      const total = calculateInvoiceTotal(invoices);
+
+      return {
+        total: total,
+        invoices: invoices.length,
+      };
+    }),
 });

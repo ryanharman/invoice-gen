@@ -29,6 +29,9 @@ export function Dashboard() {
   const { data: monthlyInvoices } = api.analytics.totalMonthlyInvoices.useQuery(
     { date: selectedDate }
   );
+  const { data: totalUnpaid } = api.analytics.totalUnpaidInvoices.useQuery({
+    date: selectedDate,
+  });
 
   function onDayClick(day: Date) {
     setSelectedDate(day);
@@ -60,14 +63,14 @@ export function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total tax due
+                Unpaid invoices total
               </CardTitle>
               <AxeIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">£1400</div>
+              <div className="text-2xl font-bold">£{totalUnpaid?.total}</div>
               <p className="text-xs font-medium text-muted-foreground">
-                2% from last month
+                From {totalUnpaid?.invoices} invoices
               </p>
             </CardContent>
           </Card>
