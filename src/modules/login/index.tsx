@@ -10,9 +10,14 @@ export function Login() {
 
   async function onGitHubLogin() {
     setIsLoading(true);
-    const signInResult = await signIn("github");
+    const signInResult = await signIn("github", {
+      callbackUrl: "/",
+      redirect: true,
+    });
+
     if (signInResult?.error) {
       setIsLoading(false);
+      return;
     }
     await push("/");
   }

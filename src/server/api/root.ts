@@ -2,6 +2,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { analyticsRouter } from "./routers/analytics";
 import { defaultsRouter } from "./routers/defaults";
 import { invoicesRouter } from "./routers/invoices";
+import { meRouter } from "./routers/me";
 
 /**
  * This is the primary router for your server.
@@ -9,6 +10,7 @@ import { invoicesRouter } from "./routers/invoices";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  me: meRouter,
   invoices: invoicesRouter,
   invoiceDefaults: defaultsRouter,
   analytics: analyticsRouter,
