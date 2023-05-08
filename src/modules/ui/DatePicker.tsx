@@ -10,12 +10,14 @@ type Props = {
   mode?: "single" | "multiple" | "range";
   onSelect?: (date?: Date) => void;
   defaultValue?: Date;
+  error?: string;
 } & CalendarProps;
 
 export function DatePicker({
   onSelect,
   defaultValue,
   selected,
+  error,
   ...rest
 }: Props) {
   const [date, setDate] = React.useState<Date | undefined>(defaultValue);
@@ -39,6 +41,7 @@ export function DatePicker({
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
+            { "border-red-500": error },
             !date && "text-muted-foreground"
           )}
         >

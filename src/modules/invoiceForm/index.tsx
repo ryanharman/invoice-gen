@@ -3,9 +3,11 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 import { api } from "~/lib/api";
-import { Invoice, UpdateInvoice } from "~/server/schemas";
+import { Invoice, InvoiceSchema, UpdateInvoice } from "~/server/schemas";
 import { InvoiceItemWithKey } from "~/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
 import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
 import {
@@ -22,6 +24,10 @@ import {
 } from "../ui";
 import { useToast } from "../ui/toast/useToast";
 
+const validationSchema = InvoiceSchema.omit({ status: true }).extend({
+  invoiceNumber: z.union([z.string(), z.number()]),
+});
+
 /**
  * When the user is creating a new invoice, this component is used to
  * create the invoice. The user can edit the invoice details, add items
@@ -29,6 +35,7 @@ import { useToast } from "../ui/toast/useToast";
  * is used to fetch the invoice data from the API if editing.
  */
 export function InvoiceForm() {
+  const { toast } = useToast();
   const { query } = useRouter();
   const isEdit = !!query.id;
   const { data: editableInvoice, isFetched: isInvoiceFetched } =
@@ -58,9 +65,19 @@ export function InvoiceForm() {
     });
   const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
   const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
-  const methods = useForm<Invoice>();
-  const { handleSubmit, reset, register, setValue, getValues } = methods;
-  const { toast } = useToast();
+  const methods = useForm<Invoice>({
+    resolver: zodResolver(validationSchema),
+    reValidateMode: "onChange",
+  });
+  const {
+    handleSubmit,
+    reset,
+    register,
+    setValue,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = methods;
 
   const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
   const invoiceItems = editableInvoice?.items.map((i, idx) => ({
@@ -172,9 +189,10 @@ export function InvoiceForm() {
     await create(values as Invoice);
   }
 
-  function onDayClick(day?: Date) {
+  async function onDayClick(day?: Date) {
     if (!day) return;
     setValue("invoiceDate", day);
+    await trigger("invoiceDate");
   }
 
   useEffect(() => {
@@ -235,6 +253,7 @@ export function InvoiceForm() {
                     <Label htmlFor="invoiceNumber">Invoice number</Label>
                     <Input
                       {...register("invoiceNumber")}
+                      error={errors.invoiceNumber?.message}
                       id="invoiceNumber"
                       type="text"
                       inputMode="numeric"
@@ -246,6 +265,7 @@ export function InvoiceForm() {
                     <Label htmlFor="invoiceDate">Invoice issue date</Label>
                     <DatePicker
                       id="invoiceDate"
+                      error={errors.invoiceDate?.message}
                       defaultValue={
                         invoiceDate ? new Date(invoiceDate) : undefined
                       }
@@ -259,8 +279,9 @@ export function InvoiceForm() {
                   <Label htmlFor="customerName">Recipient name</Label>
                   <Input
                     {...register("customerName")}
-                    type="text"
+                    error={errors.customerName?.message}
                     id="customerName"
+                    type="text"
                     placeholder="Jason Bourne Ltd"
                   />
                 </div>
@@ -268,8 +289,9 @@ export function InvoiceForm() {
                   <Label htmlFor="customerEmail">Recipient email</Label>
                   <Input
                     {...register("customerEmail")}
-                    type="email"
+                    error={errors.customerEmail?.message}
                     id="customerEmail"
+                    type="email"
                     placeholder="me@email.com"
                   />
                 </div>

@@ -9,8 +9,8 @@ export const InvoiceItemSchema = z.object({
 export const InvoiceSchema = z
   .object({
     status: z.string(),
-    customerName: z.string(),
-    customerEmail: z.string(),
+    customerName: z.string().nonempty(),
+    customerEmail: z.string().nonempty(),
     customerAddress: z.string().optional(),
     invoiceNumber: z.number(),
     invoiceDate: z.date(),
