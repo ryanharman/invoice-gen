@@ -8,10 +8,13 @@ Credit to T3 stack & Shadcn UI for making this project like butter. Dashboard re
 
 ## Features
 
-- Creation, updating and management of invoices.
-- Dashboard to view previous invoices and some basic analytics.
-- Preview of invoices with download functionality.
-- GitHub authentication via NextAuth.
+🚚📝 – Creation, updating and management of invoices.
+
+🔎📱 – Dashboard to view previous invoices and some basic analytics.
+
+👓👇 – Preview of invoices with download functionality.
+
+🔒🔑 – GitHub authentication via NextAuth.
 
 Dashboard
 ![Dashboard](/.github/images/dashboard.jpeg?raw=0)
