@@ -19,6 +19,9 @@ Dashboard
 Invoices table
 ![Invoices table](/.github/images/invoices_table.jpeg?raw=0)
 
+Invoice creation
+![Invoice creation](/.github/images/invoice_creation.jpeg?raw=0)
+
 ## Run locally
 
 Populate your .env file.

@@ -119,4 +119,11 @@ export const invoicesRouter = createTRPCRouter({
       });
       return invoice;
     }),
+  getLatestInvoiceNumber: protectedProcedure.query(async ({ ctx }) => {
+    const latestInvoice = await ctx.prisma.invoice.findFirst({
+      orderBy: { invoiceNumber: "desc" },
+    });
+    const latestNumber = latestInvoice?.invoiceNumber ?? 0;
+    return latestNumber + 1;
+  }),
 });

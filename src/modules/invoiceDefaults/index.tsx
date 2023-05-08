@@ -44,10 +44,7 @@ export function InvoiceDefaults() {
         These values will be used as default values for new invoices. They can
         be changed per invoice on creation or update.
       </Typography.Subtle>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-4 md:grid-cols-2"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-prose space-y-4">
         <FormProvider {...methods}>
           <CompanyDetails />
           <PaymentDetails />

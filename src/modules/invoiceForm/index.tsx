@@ -42,11 +42,19 @@ export function InvoiceForm() {
       }
     );
 
-  // TODO: Have the server handle user defaults.
-  // Show a warning if user defaults don't exist maybe.
-  const { data: invoiceDefaults } =
+  const { data: invoiceDefaults, isFetched: areDefaultsFetched } =
     api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
       enabled: !isEdit,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    });
+  const { data: latestInvoiceNumber } =
+    api.invoices.getLatestInvoiceNumber.useQuery(undefined, {
+      enabled: !isEdit,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     });
   const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
   const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
@@ -169,13 +177,23 @@ export function InvoiceForm() {
     setValue("invoiceDate", day);
   }
 
-  // This is annoying but needed in order for default values to work
-  // with RHF
   useEffect(() => {
-    if (isInvoiceFetched) {
-      reset({ ...editableInvoice, ...invoiceDefaults, customerAddress: "" });
+    if (!isEdit && areDefaultsFetched) {
+      reset({ ...invoiceDefaults, invoiceNumber: latestInvoiceNumber });
+      return;
     }
-  }, [reset, editableInvoice, invoiceDefaults, isInvoiceFetched]);
+    if (isInvoiceFetched) {
+      reset({ ...editableInvoice, customerAddress: "" });
+    }
+  }, [
+    reset,
+    editableInvoice,
+    invoiceDefaults,
+    areDefaultsFetched,
+    latestInvoiceNumber,
+    isEdit,
+    isInvoiceFetched,
+  ]);
 
   useEffect(() => {
     if (isInvoiceFetched && invoiceItems?.length) {
@@ -194,14 +212,14 @@ export function InvoiceForm() {
       <Typography.H1 className="mb-2">
         {isEdit ? "Edit invoice" : "Create a new invoice"}
       </Typography.H1>
-      <Typography.Subtle className="mb-8">
+      <Typography.Subtle className="mb-8 max-w-prose">
         {isEdit
           ? "Add new items, update existing ones, change your company or payment details for this invoice only."
-          : "Create a new invoice"}
+          : "Create a new invoice, add items, change your company or payment details for this invoice only."}
       </Typography.Subtle>
       <form
         id="invoice-form"
-        className="grid max-w-screen-2xl grid-cols-1 gap-8 md:grid-cols-6"
+        className="grid max-w-screen-2xl grid-cols-1 gap-4 md:grid-cols-6"
         onSubmit={handleSubmit(onSubmit)}
       >
         <FormProvider {...methods}>
@@ -212,19 +230,7 @@ export function InvoiceForm() {
             <CardContent>
               {/* Invoice details */}
               <section className="space-y-4">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="grid">
-                    <Label htmlFor="invoiceDate">Invoice issue date</Label>
-                    <DatePicker
-                      id="invoiceDate"
-                      defaultValue={
-                        invoiceDate ? new Date(invoiceDate) : undefined
-                      }
-                      selected={invoiceDate ? new Date(invoiceDate) : undefined}
-                      onSelect={onDayClick}
-                      required
-                    />
-                  </div>
+                <div className="grid grid-cols-2 items-end gap-6">
                   <div>
                     <Label htmlFor="invoiceNumber">Invoice number</Label>
                     <Input
@@ -234,6 +240,18 @@ export function InvoiceForm() {
                       inputMode="numeric"
                       pattern="[0-9]*"
                       placeholder="77"
+                    />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label htmlFor="invoiceDate">Invoice issue date</Label>
+                    <DatePicker
+                      id="invoiceDate"
+                      defaultValue={
+                        invoiceDate ? new Date(invoiceDate) : undefined
+                      }
+                      selected={invoiceDate ? new Date(invoiceDate) : undefined}
+                      onSelect={onDayClick}
+                      required
                     />
                   </div>
                 </div>
@@ -264,11 +282,11 @@ export function InvoiceForm() {
                 <CardTitle>Items</CardTitle>
                 <div>
                   <div className="mb-2 space-y-4">
-                    {items?.map((item) => (
+                    {items?.map((item, idx) => (
                       <Fragment key={item.key}>
                         <div className="flex items-center gap-4">
                           <div className="grow">
-                            <Label htmlFor="invoiceItem">Item</Label>
+                            <Label htmlFor="invoiceItem">Item {idx + 1}</Label>
                             <Input
                               type="text"
                               id="invoiceItem"
@@ -326,7 +344,7 @@ export function InvoiceForm() {
               </section>
             </CardContent>
           </Card>
-          <div className="space-y-8 md:col-span-2">
+          <div className="space-y-4 md:col-span-2">
             <CompanyDetails />
             <PaymentDetails />
           </div>

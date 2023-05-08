@@ -28,7 +28,7 @@ export default function Preview() {
           Download as PDF
         </Button>
       </div>
-      <div className="mt-4 max-w-4xl rounded-md border px-6 py-8">
+      <div className="mt-4 max-w-4xl rounded-md border bg-white px-6 py-8">
         <InvoicePreview
           ref={componentRef}
           header={{
