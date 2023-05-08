@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { InvoiceItem } from '~/types';
+import { useMemo } from "react";
+import { InvoiceItem } from "~/types";
 
 export type TableProps = {
   items?: InvoiceItem[];
@@ -31,7 +31,7 @@ export function Table({ items }: TableProps) {
       </table>
       <div className="flex flex-col items-end gap-2 font-bold uppercase">
         <div className="text-xl text-gray-800">Total Amount Due</div>
-        <div className="text-xl">£{amountDue}</div>
+        <div className="text-xl text-gray-600">£{amountDue}</div>
       </div>
     </section>
   );

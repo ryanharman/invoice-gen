@@ -161,7 +161,7 @@ export function useColumns() {
             <DropdownMenuContent className="w-56">
               <DropdownMenuItem
                 disabled={row.original.status.toLowerCase() === "paid"}
-                onClick={() => push(`/edit/${row.original.id}`)}
+                onClick={() => push(`invoices/${row.original.id}`)}
               >
                 <EditIcon className="mr-2 h-4 w-4" />
                 <span>Edit</span>
@@ -219,14 +219,14 @@ export function useColumns() {
               </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => push(`/preview/${row.original.id}`)}
+                onClick={() => push(`invoices/${row.original.id}/preview`)}
               >
                 <SearchIcon className="mr-2 h-4 w-4" />
                 <span>Preview</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 // TODO: Download functionality from here
-                onClick={() => push(`/preview/${row.original.id}`)}
+                onClick={() => push(`invoices/${row.original.id}/preview`)}
               >
                 <DownloadIcon className="mr-2 h-4 w-4" />
                 <span>Download</span>

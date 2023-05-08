@@ -11,7 +11,7 @@ export function Invoices() {
   const columns = useColumns();
 
   async function createInvoice() {
-    await push("/create");
+    await push("invoices/create");
   }
 
   if (!data) {
