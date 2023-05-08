@@ -1,5 +1,7 @@
+import { GithubIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib";
+import { buttonVariants } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Typography } from "./Typography";
 
@@ -17,7 +19,7 @@ export function NewLayout({ children, classNames }: Props) {
     <>
       <header
         className={cn(
-          "flex h-12 w-full items-center justify-between border-b px-8",
+          "flex h-14 w-full items-center justify-between border-b bg-card px-8",
           classNames?.main
         )}
       >
@@ -54,6 +56,13 @@ export function NewLayout({ children, classNames }: Props) {
           </Link> */}
         </nav>
 
+        <a
+          target="_blank"
+          href="https://github.com/ryanharman/invoice-gen"
+          className={buttonVariants({ variant: "ghost" })}
+        >
+          <GithubIcon />
+        </a>
         <ThemeToggle />
       </header>
       <main className={cn("p-8", classNames?.main)}>{children}</main>

@@ -2,15 +2,18 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { api } from "~/lib/api";
 import { Invoice, UpdateInvoice } from "~/server/schemas";
 import { InvoiceItemWithKey } from "~/types";
+import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
+import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
+  CardTitle,
   DatePicker,
   Input,
   Label,
@@ -47,8 +50,8 @@ export function InvoiceForm() {
     });
   const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
   const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
-  const { handleSubmit, reset, register, setValue, getValues } =
-    useForm<Invoice>();
+  const methods = useForm<Invoice>();
+  const { handleSubmit, reset, register, setValue, getValues } = methods;
   const { toast } = useToast();
 
   const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
@@ -170,9 +173,9 @@ export function InvoiceForm() {
   // with RHF
   useEffect(() => {
     if (isInvoiceFetched) {
-      reset({ ...editableInvoice, customerAddress: "" });
+      reset({ ...editableInvoice, ...invoiceDefaults, customerAddress: "" });
     }
-  }, [reset, editableInvoice, isInvoiceFetched]);
+  }, [reset, editableInvoice, invoiceDefaults, isInvoiceFetched]);
 
   useEffect(() => {
     if (isInvoiceFetched && invoiceItems?.length) {
@@ -188,137 +191,151 @@ export function InvoiceForm() {
 
   return (
     <>
-      <Typography.H1 className="mb-8">
+      <Typography.H1 className="mb-2">
         {isEdit ? "Edit invoice" : "Create a new invoice"}
       </Typography.H1>
+      <Typography.Subtle className="mb-8">
+        {isEdit
+          ? "Add new items, update existing ones, change your company or payment details for this invoice only."
+          : "Create a new invoice"}
+      </Typography.Subtle>
       <form
         id="invoice-form"
-        className="flex w-full max-w-prose flex-col gap-4"
+        className="grid max-w-screen-2xl grid-cols-1 gap-8 md:grid-cols-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Card>
-          <CardHeader>
-            <Typography.Large>Details</Typography.Large>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Invoice details */}
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="invoiceDate">Invoice issue date</Label>
-                <DatePicker
-                  id="invoiceDate"
-                  defaultValue={invoiceDate ? new Date(invoiceDate) : undefined}
-                  selected={invoiceDate ? new Date(invoiceDate) : undefined}
-                  // selected={new Date(getValues("invoiceDate") ?? undefined)}
-                  onSelect={onDayClick}
-                  required
-                />
-                {/* <Input
-                  {...register("invoiceDate")}
-                  id="invoiceDate"
-                  type="date"
-                /> */}
-              </div>
-              <div>
-                <Label htmlFor="invoiceNumber">Invoice number</Label>
-                <Input
-                  {...register("invoiceNumber")}
-                  id="invoiceNumber"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="77"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="customerName">Recipient name</Label>
-              <Input
-                {...register("customerName")}
-                type="text"
-                id="customerName"
-                placeholder="Jason Bourne Ltd"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="customerEmail">Recipient email</Label>
-              <Input
-                {...register("customerEmail")}
-                type="email"
-                id="customerEmail"
-                placeholder="me@email.com"
-              />
-            </div>
+        <FormProvider {...methods}>
+          <Card className="md:col-span-4">
+            <CardHeader>
+              <CardTitle>Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Invoice details */}
+              <section className="space-y-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="grid">
+                    <Label htmlFor="invoiceDate">Invoice issue date</Label>
+                    <DatePicker
+                      id="invoiceDate"
+                      defaultValue={
+                        invoiceDate ? new Date(invoiceDate) : undefined
+                      }
+                      selected={invoiceDate ? new Date(invoiceDate) : undefined}
+                      onSelect={onDayClick}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="invoiceNumber">Invoice number</Label>
+                    <Input
+                      {...register("invoiceNumber")}
+                      id="invoiceNumber"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      placeholder="77"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="customerName">Recipient name</Label>
+                  <Input
+                    {...register("customerName")}
+                    type="text"
+                    id="customerName"
+                    placeholder="Jason Bourne Ltd"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="customerEmail">Recipient email</Label>
+                  <Input
+                    {...register("customerEmail")}
+                    type="email"
+                    id="customerEmail"
+                    placeholder="me@email.com"
+                  />
+                </div>
+              </section>
 
-            {/* Invoice items */}
-            <Separator />
-            <Typography.Large>Items</Typography.Large>
-            <div>
-              <div className="mb-2 space-y-4">
-                {items?.map((item) => (
-                  <Fragment key={item.key}>
-                    <div className="flex items-center gap-4">
-                      <div className="grow">
-                        <Label htmlFor="invoiceItem">Item</Label>
-                        <Input
-                          type="text"
-                          id="invoiceItem"
-                          placeholder="Meeting"
-                          value={item.title}
-                          onChange={(e) =>
-                            editInvoiceItem(e.target.value, item, "title")
-                          }
-                        />
-                      </div>
-                      <div className="w-28">
-                        <Label htmlFor="invoiceItemPrice">Price</Label>
-                        <Input
-                          id="invoiceItemPrice"
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          placeholder="80"
-                          value={item.amount}
-                          onChange={(e) =>
-                            editInvoiceItem(e.target.value, item, "amount")
-                          }
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="mt-6 px-2"
-                        onClick={() => removeItem(item)}
-                      >
-                        <MinusIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </Fragment>
-                ))}
-              </div>
-              <div className="flex items-center justify-between">
-                <Button
-                  type="button"
-                  variant="link"
-                  className="gap-2 px-0 py-1 text-blue-600"
-                  onClick={addItem}
-                >
-                  <PlusIcon className="h-4 w-4" /> Add item
-                </Button>
-                <Typography.Subtle>
-                  Total: £
-                  {items?.reduce((acc, curr) => acc + Number(curr.amount), 0)}
-                </Typography.Subtle>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              {/* Invoice items */}
+              <Separator className="my-8" />
 
-        <div>
-          <Button id="submit-button" form="invoice-form" type="submit">
-            {isEdit ? "Update invoice" : "Create invoice"}
-          </Button>
-        </div>
+              <section className="space-y-4">
+                <CardTitle>Items</CardTitle>
+                <div>
+                  <div className="mb-2 space-y-4">
+                    {items?.map((item) => (
+                      <Fragment key={item.key}>
+                        <div className="flex items-center gap-4">
+                          <div className="grow">
+                            <Label htmlFor="invoiceItem">Item</Label>
+                            <Input
+                              type="text"
+                              id="invoiceItem"
+                              placeholder="Meeting"
+                              value={item.title}
+                              onChange={(e) =>
+                                editInvoiceItem(e.target.value, item, "title")
+                              }
+                            />
+                          </div>
+                          <div className="w-28">
+                            <Label htmlFor="invoiceItemPrice">Price</Label>
+                            <Input
+                              id="invoiceItemPrice"
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              placeholder="80"
+                              value={item.amount}
+                              onChange={(e) =>
+                                editInvoiceItem(e.target.value, item, "amount")
+                              }
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="mt-6 px-2"
+                            onClick={() => removeItem(item)}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </Fragment>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="gap-2 px-0 py-1 text-blue-600"
+                      onClick={addItem}
+                    >
+                      <PlusIcon className="h-4 w-4" /> Add item
+                    </Button>
+                    <Typography.Subtle>
+                      Total: £
+                      {items?.reduce(
+                        (acc, curr) => acc + Number(curr.amount),
+                        0
+                      )}
+                    </Typography.Subtle>
+                  </div>
+                </div>
+              </section>
+            </CardContent>
+          </Card>
+          <div className="space-y-8 md:col-span-2">
+            <CompanyDetails />
+            <PaymentDetails />
+          </div>
+          <div>
+            <Button id="submit-button" form="invoice-form" type="submit">
+              {isEdit ? "Update invoice" : "Create invoice"}
+            </Button>
+          </div>
+        </FormProvider>
       </form>
     </>
   );

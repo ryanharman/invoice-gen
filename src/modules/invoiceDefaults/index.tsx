@@ -1,20 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { api } from "~/lib";
 import { InvoiceDefault } from "~/server/schemas";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-  Textarea,
-  Typography,
-  useToast,
-} from "../ui";
+import { Button, Typography, useToast } from "../ui";
+import { CompanyDetails } from "./CompanyDetails";
+import { PaymentDetails } from "./PaymentDetails";
 
 export function InvoiceDefaults() {
   const { toast } = useToast();
@@ -24,7 +15,8 @@ export function InvoiceDefaults() {
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
-  const { handleSubmit, reset, register } = useForm<InvoiceDefault>();
+  const methods = useForm<InvoiceDefault>();
+  const { handleSubmit, reset } = methods;
 
   async function onSubmit(values: InvoiceDefault) {
     await mutateAsync(
@@ -47,96 +39,22 @@ export function InvoiceDefaults() {
 
   return (
     <>
-      <Typography.H1 className="mb-8">Company defaults</Typography.H1>
+      <Typography.H1 className="mb-2">Company defaults</Typography.H1>
+      <Typography.Subtle className="mb-8 max-w-prose">
+        These values will be used as default values for new invoices. They can
+        be changed per invoice on creation or update.
+      </Typography.Subtle>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-4 md:grid-cols-2"
       >
-        <Card>
-          <CardHeader>
-            <CardTitle>Your company details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="companyName">Company name</Label>
-              <Input
-                {...register("companyName")}
-                type="text"
-                id="companyName"
-                placeholder="Jason Bourne Ltd"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="companyEmail">Company email</Label>
-              <Input
-                {...register("companyEmail")}
-                type="email"
-                id="companyEmail"
-                placeholder="me@email.com"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="companyAddress">Company address</Label>
-              <Textarea
-                {...register("companyAddress")}
-                id="companyAddress"
-                placeholder="34 Convent Gardens, London, L1 24H"
-              />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Your payment details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="accountName">Account name</Label>
-              <Input
-                {...register("accountName")}
-                type="text"
-                id="accountName"
-                placeholder="Jason Bourne"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="accountNumber">Account number</Label>
-                <Input
-                  {...register("accountNumber")}
-                  id="accountNumber"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[-+]?[0-9]*[.,]?[0-9]+"
-                  placeholder="00112233"
-                />
-              </div>
-              <div>
-                <Label htmlFor="sortCode">Sort code</Label>
-                <Input
-                  {...register("sortCode")}
-                  id="sortCode"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[-+]?[0-9]*[.,]?[0-9]+"
-                  placeholder="00 11 33"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="paymentTerms">Payment terms</Label>
-              <Input
-                {...register("paymentTerms")}
-                type="text"
-                id="paymentTerms"
-                placeholder="Payment within..."
-              />
-            </div>
-          </CardContent>
-        </Card>
-        <div>
-          <Button>Save defaults</Button>
-        </div>
+        <FormProvider {...methods}>
+          <CompanyDetails />
+          <PaymentDetails />
+          <div>
+            <Button>Save defaults</Button>
+          </div>
+        </FormProvider>
       </form>
     </>
   );
