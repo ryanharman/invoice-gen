@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import { api } from "~/lib/api";
 import { Table } from "../table";
-import { Button, Skeleton, Typography } from "../ui";
+import { Button, Card, Skeleton, Typography } from "../ui";
 import { useColumns } from "./useColumns";
 
 export function Invoices() {
@@ -37,7 +37,9 @@ export function Invoices() {
         <Typography.H1 className="mb-8">Invoices</Typography.H1>
         <Button onClick={createInvoice}>Create an invoice</Button>
       </div>
-      <Table data={data} columns={columns} />
+      <Card>
+        <Table data={data} columns={columns} />
+      </Card>
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-8">
           <Typography.H3>No invoices found</Typography.H3>

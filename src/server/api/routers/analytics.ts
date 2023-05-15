@@ -169,7 +169,6 @@ export const analyticsRouter = createTRPCRouter({
         where: {
           userId: ctx.session.user.id,
           invoiceDate: {
-            // gte: filterBy,
             lt: add(filterBy, { months: 1 }),
           },
           status: "UNPAID",

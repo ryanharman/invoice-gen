@@ -5,7 +5,7 @@ import { AppType } from "next/app";
 import Head from "next/head";
 import { cn } from "~/lib";
 import { api } from "~/lib/api";
-import { ThemeProvider } from "~/modules";
+import { ErrorBoundary, ThemeProvider } from "~/modules";
 import { Auth } from "~/modules/auth";
 import { Toaster } from "~/modules/ui/toast/Toaster";
 
@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <>
+    <ErrorBoundary>
       <Head>
         <title>Ryan Harman&apos;s Freelance App</title>
         <meta name="description" content="Ree anne herman" />
@@ -30,7 +30,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           </ThemeProvider>
         </Auth>
       </SessionProvider>
-    </>
+    </ErrorBoundary>
   );
 };
 

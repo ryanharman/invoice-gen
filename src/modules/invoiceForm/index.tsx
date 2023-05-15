@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MailIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -36,8 +36,9 @@ const validationSchema = InvoiceSchema.omit({ status: true }).extend({
  */
 export function InvoiceForm() {
   const { toast } = useToast();
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const isEdit = !!query.id;
+  const context = api.useContext();
   const { data: editableInvoice, isFetched: isInvoiceFetched } =
     api.invoices.getById.useQuery(
       { id: query.id as string },
@@ -48,7 +49,6 @@ export function InvoiceForm() {
         refetchOnReconnect: false,
       }
     );
-
   const { data: invoiceDefaults, isFetched: areDefaultsFetched } =
     api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
       enabled: !isEdit,
@@ -63,8 +63,17 @@ export function InvoiceForm() {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     });
-  const { mutateAsync: createInvoice } = api.invoices.create.useMutation();
-  const { mutateAsync: updateInvoice } = api.invoices.update.useMutation();
+  const { data: hasInvoiceBeenSent } = api.invoices.hasBeenSent.useQuery(
+    { id: query.id as string },
+    { enabled: isEdit }
+  );
+  const { mutateAsync: createInvoice, isLoading: isInvoiceCreating } =
+    api.invoices.create.useMutation();
+  const { mutateAsync: updateInvoice, isLoading: isInvoiceUpdating } =
+    api.invoices.update.useMutation();
+  const { mutateAsync: sendInvoice, isLoading: isInvoiceSending } =
+    api.invoices.sendInvoice.useMutation();
+
   const methods = useForm<Invoice>({
     resolver: zodResolver(validationSchema),
     reValidateMode: "onChange",
@@ -79,6 +88,9 @@ export function InvoiceForm() {
     formState: { errors },
   } = methods;
 
+  // Invoice items are managed via state, not react-hook-form.
+  // We have a default item that's used for new invoices or ones without
+  // existing items. If the invoice has items, we use those instead.
   const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
   const invoiceItems = editableInvoice?.items.map((i, idx) => ({
     ...i,
@@ -133,11 +145,13 @@ export function InvoiceForm() {
         })),
       },
       {
-        onSuccess: () => {
+        onSuccess: async (data) => {
           toast({
             title: "Invoice created",
             description: "Your invoice has been created successfully.",
           });
+          await context.invoices.invalidate();
+          await push(`/invoices/${data.id}`);
         },
         onError: () => {
           toast({
@@ -155,6 +169,7 @@ export function InvoiceForm() {
         invoice: {
           ...invoiceDefaults,
           ...invoice,
+          id: query.id as string,
           invoiceNumber: Number(invoice.invoiceNumber),
         },
         items: items.map((item) => {
@@ -187,6 +202,29 @@ export function InvoiceForm() {
     }
 
     await create(values as Invoice);
+  }
+
+  async function sendInvoiceOnClick() {
+    if (isEdit && editableInvoice?.id) {
+      await sendInvoice(
+        { id: editableInvoice?.id },
+        {
+          onSuccess: async () => {
+            toast({
+              title: "Invoice sent",
+              description: "Your invoice has been sent successfully.",
+            });
+            await context.invoices.invalidate();
+          },
+          onError: () => {
+            toast({
+              title: "Error",
+              description: "There was an error sending your invoice.",
+            });
+          },
+        }
+      );
+    }
   }
 
   async function onDayClick(day?: Date) {
@@ -227,14 +265,33 @@ export function InvoiceForm() {
 
   return (
     <>
-      <Typography.H1 className="mb-2">
-        {isEdit ? "Edit invoice" : "Create a new invoice"}
-      </Typography.H1>
-      <Typography.Subtle className="mb-8 max-w-prose">
-        {isEdit
-          ? "Add new items, update existing ones, change your company or payment details for this invoice only."
-          : "Create a new invoice, add items, change your company or payment details for this invoice only."}
-      </Typography.Subtle>
+      <header className="mb-8 flex items-center justify-between">
+        <div>
+          <Typography.H1 className="mb-2">
+            {isEdit ? "Manage invoice" : "Create a new invoice"}
+          </Typography.H1>
+          <Typography.Subtle className="max-w-prose">
+            {isEdit
+              ? "Add new items, update existing ones, change your company or payment details for this invoice only."
+              : "Create a new invoice, add items, change your company or payment details for this invoice only."}
+          </Typography.Subtle>
+        </div>
+        <div>
+          {isEdit &&
+            editableInvoice?.status !== "Paid" &&
+            !hasInvoiceBeenSent && (
+              <Button
+                onClick={sendInvoiceOnClick}
+                disabled={isInvoiceSending && !hasInvoiceBeenSent}
+                variant="outline"
+                className="bg-card"
+              >
+                <MailIcon className="mr-2 h-4 w-4 " />
+                Send invoice
+              </Button>
+            )}
+        </div>
+      </header>
       <form
         id="invoice-form"
         className="grid max-w-screen-2xl grid-cols-1 gap-4 md:grid-cols-6"
@@ -371,7 +428,12 @@ export function InvoiceForm() {
             <PaymentDetails />
           </div>
           <div>
-            <Button id="submit-button" form="invoice-form" type="submit">
+            <Button
+              disabled={isEdit ? isInvoiceUpdating : isInvoiceCreating}
+              id="submit-button"
+              form="invoice-form"
+              type="submit"
+            >
               {isEdit ? "Update invoice" : "Create invoice"}
             </Button>
           </div>

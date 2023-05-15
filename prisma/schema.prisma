@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -12,7 +13,7 @@ datasource db {
 }
 
 model Invoice {
-  id              String   @id @default(cuid())
+  id              String   @id @unique @default(cuid())
   status          String
   companyName     String
   companyEmail    String
@@ -27,9 +28,10 @@ model Invoice {
   sortCode        String
   paymentTerms    String
 
-  items  InvoiceItem[]
-  userId String
-  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoicePayment InvoicePayment?
+  items          InvoiceItem[]
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,6 +70,21 @@ model UserDefaultInvoiceValues {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+model InvoicePayment {
+  id         String    @id @default(cuid())
+  key        String    @default(cuid())
+  viewedDate DateTime?
+  paidDate   DateTime?
+
+  invoiceId String  @unique
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoiceId])
 }
 
 // Necessary for Next auth

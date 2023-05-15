@@ -1,9 +1,8 @@
-import { format, isValid } from "date-fns";
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { format, isValid } from "date-fns";
 import {
   CheckIcon,
   CrosshairIcon,
-  DownloadIcon,
   EditIcon,
   GitPullRequestDraftIcon,
   LifeBuoyIcon,
@@ -134,7 +133,6 @@ export function useColumns() {
           return (
             <>{format(new Date(row.original.invoiceDate), "dd MMM yyyy")}</>
           );
-          return "test";
         },
       },
       {
@@ -164,7 +162,7 @@ export function useColumns() {
                 onClick={() => push(`invoices/${row.original.id}`)}
               >
                 <EditIcon className="mr-2 h-4 w-4" />
-                <span>Edit</span>
+                <span>Manage</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => duplicateInvoice(row.original)}>
                 <PlusIcon className="mr-2 h-4 w-4" />
@@ -223,13 +221,6 @@ export function useColumns() {
               >
                 <SearchIcon className="mr-2 h-4 w-4" />
                 <span>Preview</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                // TODO: Download functionality from here
-                onClick={() => push(`invoices/${row.original.id}/preview`)}
-              >
-                <DownloadIcon className="mr-2 h-4 w-4" />
-                <span>Download</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

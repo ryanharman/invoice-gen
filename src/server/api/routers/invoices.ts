@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { sendInvoiceEmail } from "~/server/nodemailer";
 import {
   InvoiceItemSchema,
   InvoiceSchema,
@@ -126,4 +127,33 @@ export const invoicesRouter = createTRPCRouter({
     const latestNumber = latestInvoice?.invoiceNumber ?? 0;
     return latestNumber + 1;
   }),
+  hasBeenSent: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const payment = await ctx.prisma.invoicePayment.findFirst({
+        where: { invoiceId: input.id },
+      });
+      return !!payment;
+    }),
+  sendInvoice: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const key = Math.random().toString(36).substring(2, 34);
+      const payment = await ctx.prisma.invoicePayment.create({
+        data: { invoiceId: input.id, key },
+        include: { invoice: true },
+      });
+
+      sendInvoiceEmail({
+        key: `${input.id}-${key}`,
+        companyName: payment.invoice.companyName,
+        emailFrom: payment.invoice.companyEmail,
+        emailTo: payment.invoice.customerEmail,
+      });
+
+      await ctx.prisma.invoice.update({
+        where: { id: input.id },
+        data: { status: "Unpaid" },
+      });
+    }),
 });
