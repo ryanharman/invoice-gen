@@ -8,7 +8,7 @@ export const paymentRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const [id, key] = input.key.split("-");
       const payment = await ctx.prisma.invoicePayment.findUniqueOrThrow({
-        where: { id },
+        where: { invoiceId: id },
         include: { invoice: { include: { items: true } } },
       });
 

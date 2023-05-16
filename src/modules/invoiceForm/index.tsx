@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { MailIcon, MinusIcon, PlusIcon } from "lucide-react";
+import { Loader, MailIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -73,6 +73,11 @@ export function InvoiceForm() {
     api.invoices.update.useMutation();
   const { mutateAsync: sendInvoice, isLoading: isInvoiceSending } =
     api.invoices.sendInvoice.useMutation();
+  const [isInvoiceSent, setIsInvoiceSent] = useState(false);
+  const hasBeenSent = useMemo(() => {
+    if (isInvoiceSent) return true;
+    return hasInvoiceBeenSent;
+  }, [isInvoiceSent, hasInvoiceBeenSent]);
 
   const methods = useForm<Invoice>({
     resolver: zodResolver(validationSchema),
@@ -210,6 +215,7 @@ export function InvoiceForm() {
         { id: editableInvoice?.id },
         {
           onSuccess: async () => {
+            setIsInvoiceSent(true);
             toast({
               title: "Invoice sent",
               description: "Your invoice has been sent successfully.",
@@ -277,19 +283,21 @@ export function InvoiceForm() {
           </Typography.Subtle>
         </div>
         <div>
-          {isEdit &&
-            editableInvoice?.status !== "Paid" &&
-            !hasInvoiceBeenSent && (
-              <Button
-                onClick={sendInvoiceOnClick}
-                disabled={isInvoiceSending && !hasInvoiceBeenSent}
-                variant="outline"
-                className="bg-card"
-              >
+          {isEdit && editableInvoice?.status !== "Paid" && !hasBeenSent && (
+            <Button
+              onClick={sendInvoiceOnClick}
+              disabled={isInvoiceSending && hasBeenSent}
+              variant="outline"
+              className="bg-card"
+            >
+              {isInvoiceSending ? (
+                <Loader className="mr-2 h-4 w-4" />
+              ) : (
                 <MailIcon className="mr-2 h-4 w-4 " />
-                Send invoice
-              </Button>
-            )}
+              )}
+              Send invoice
+            </Button>
+          )}
         </div>
       </header>
       <form
@@ -434,6 +442,7 @@ export function InvoiceForm() {
               form="invoice-form"
               type="submit"
             >
+              {isInvoiceUpdating && <Loader className="mr-2 h-4 w-4" />}
               {isEdit ? "Update invoice" : "Create invoice"}
             </Button>
           </div>
