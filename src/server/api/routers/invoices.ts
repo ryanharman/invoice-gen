@@ -127,6 +127,33 @@ export const invoicesRouter = createTRPCRouter({
 
       return invoice;
     }),
+  duplicate: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      console.log(input.id);
+      const invoice = await ctx.prisma.invoice.findUniqueOrThrow({
+        where: { id: input.id },
+        include: { items: true },
+      });
+
+      const newItems = invoice.items.map((item) => ({
+        title: item.title,
+        amount: item.amount,
+      }));
+
+      const newInvoice = await ctx.prisma.invoice.create({
+        data: {
+          ...invoice,
+          id: undefined,
+          userId: undefined,
+          status: "Draft",
+          items: { create: newItems },
+          user: { connect: { id: ctx.session.user.id } },
+        },
+      });
+
+      return newInvoice;
+    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {

@@ -40,21 +40,14 @@ export function useColumns() {
   const { push } = useRouter();
   const { toast } = useToast();
   const context = api.useContext();
-  const { mutateAsync: create } = api.invoices.create.useMutation();
   const { mutateAsync: update } = api.invoices.update.useMutation();
+  const { mutateAsync: duplicate } = api.invoices.duplicate.useMutation();
   const { mutateAsync: deleteInvoice } = api.invoices.delete.useMutation();
 
   const duplicateInvoice = useCallback(
     async (invoice: Invoice) => {
-      await create(
-        {
-          invoice: {
-            ...invoice,
-            customerAddress: "",
-            invoiceNumber: invoice.invoiceNumber,
-            status: "Draft",
-          },
-        },
+      await duplicate(
+        { id: invoice.id },
         {
           onSuccess: async () => {
             toast({
@@ -66,7 +59,7 @@ export function useColumns() {
         }
       );
     },
-    [context.invoices, create, toast]
+    [context.invoices, duplicate, toast]
   );
 
   const changeStatus = useCallback(

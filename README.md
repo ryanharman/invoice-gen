@@ -10,9 +10,11 @@ Credit to T3 stack & Shadcn UI for making this project like butter. Dashboard re
 
 🚚📝 – Creation, updating and management of invoices.
 
-🔎📱 – Dashboard to view previous invoices and some basic analytics.
-
 👓👇 – Preview of invoices with download functionality.
+
+📮📩 – Sending of invoices in app for clients to view.
+
+🔎📱 – Dashboard to view previous invoices and some basic analytics.
 
 🔒🔑 – GitHub authentication via NextAuth.
 
