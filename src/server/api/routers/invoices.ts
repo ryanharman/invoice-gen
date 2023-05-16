@@ -25,6 +25,21 @@ export const invoicesRouter = createTRPCRouter({
         where: { userId: ctx.session.user.id },
         take: input?.limit,
       });
+      return invoices;
+    }),
+  getAllWithDecryptedValues: protectedProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().optional(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const invoices = await ctx.prisma.invoice.findMany({
+        where: { userId: ctx.session.user.id },
+        take: input?.limit,
+      });
       const invoicesWithDecryptedValues = await Promise.all(
         invoices.map((invoice) => decryptPaymentDetails(invoice))
       );

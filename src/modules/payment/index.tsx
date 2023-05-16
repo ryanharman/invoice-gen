@@ -192,7 +192,7 @@ export function Payment() {
             >
               <DownloadIcon className="mr-2 h-5 w-5" /> Download me
             </Button>
-            <CardContent className="px-8 py-16">
+            <CardContent className="bg-white px-8 py-16">
               {invoice && (
                 <InvoicePreview
                   ref={componentRef}

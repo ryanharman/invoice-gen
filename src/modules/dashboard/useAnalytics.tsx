@@ -6,7 +6,9 @@ export function useAnalytics() {
   const [selectedDate, setSelectedDate] = useState<Date>(
     startOfMonth(new Date())
   );
-  const { data: invoices } = api.invoices.getAll.useQuery({ limit: 15 });
+  const { data: invoices } = api.invoices.getAll.useQuery({
+    limit: 10,
+  });
   const { data: revenue } = api.analytics.revenue.useQuery({
     date: selectedDate,
   });
