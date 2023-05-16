@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { api } from "~/lib";
+import { NO_AUTH_REQUIRED_PAGES } from "./constants";
 
 type AuthProps = {
   children: JSX.Element;
@@ -34,7 +35,7 @@ export const Auth = ({
   required,
 }: AuthProps): JSX.Element | null => {
   const { pathname } = useRouter();
-  const actualRequired = required && pathname !== "/login";
+  const actualRequired = required && !NO_AUTH_REQUIRED_PAGES.includes(pathname);
   const { session, status } = useOurSession({
     redirectLink: "/login",
     required: actualRequired,

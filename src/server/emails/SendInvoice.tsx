@@ -26,6 +26,8 @@ function createBaseUrl() {
   return "";
 }
 
+const baseUrl = createBaseUrl();
+
 export const SendInvoiceEmail = ({
   companyName,
   invoiceKey,
@@ -36,7 +38,7 @@ export const SendInvoiceEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${createBaseUrl()}/static/rynvoice.png`}
+          src={`${baseUrl}/static/rynvoice.png`}
           width="42"
           height="42"
           alt="Ryan Harman"
@@ -54,7 +56,7 @@ export const SendInvoiceEmail = ({
             pY={11}
             pX={23}
             style={button}
-            href={`${createBaseUrl()}/i/${invoiceKey}`}
+            href={`${baseUrl}/i/${invoiceKey}`}
           >
             View invoice
           </Button>
