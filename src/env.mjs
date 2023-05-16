@@ -27,6 +27,7 @@ const server = z.object({
   EMAIL_PORT: z.string(),
   EMAIL_USER: z.string(),
   EMAIL_PASSWORD: z.string(),
+  EMAIL_URL: z.string().optional(),
 });
 
 /**
@@ -56,6 +57,7 @@ const processEnv = {
   EMAIL_PORT: process.env.EMAIL_PORT,
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+  EMAIL_URL: process.env.EMAIL_URL,
 };
 
 // Don't touch the part below

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { env } from "~/env.mjs";
 import {
   Body,
   Button,
@@ -19,9 +20,11 @@ interface SendInvoiceEmailProps {
   invoiceKey: string;
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
+function createBaseUrl() {
+  if (env.EMAIL_URL) return `https://${env.EMAIL_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "";
+}
 
 export const SendInvoiceEmail = ({
   companyName,
@@ -33,7 +36,7 @@ export const SendInvoiceEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${baseUrl}/static/rynvoice.png`}
+          src={`${createBaseUrl()}/static/rynvoice.png`}
           width="42"
           height="42"
           alt="Ryan Harman"
@@ -51,7 +54,7 @@ export const SendInvoiceEmail = ({
             pY={11}
             pX={23}
             style={button}
-            href={`${baseUrl}/i/${invoiceKey}`}
+            href={`${createBaseUrl()}/i/${invoiceKey}`}
           >
             View invoice
           </Button>
