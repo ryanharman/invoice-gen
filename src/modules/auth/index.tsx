@@ -44,12 +44,16 @@ export const Auth = ({
   // wait for api response.
   if (!actualRequired) return children;
   if (status === "loading") {
-    return LoadingComponent ? <LoadingComponent /> : <div />;
+    return LoadingComponent ? (
+      <LoadingComponent />
+    ) : (
+      <div className="bg-background" />
+    );
   }
   // If the user has a session, show the children
   if (session != null) {
     return children;
   }
   // If the user doesn't have a session, redirect to the login page and render nothing
-  return null;
+  return <div className="bg-background" />;
 };

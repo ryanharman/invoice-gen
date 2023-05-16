@@ -21,14 +21,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
-        <Auth required>
-          <ThemeProvider defaultTheme="system" enableSystem attribute="class">
+        <ThemeProvider defaultTheme="system" enableSystem attribute="class">
+          <Auth required>
             <main className={cn("min-h-screen bg-background antialiased")}>
               <Component {...pageProps} />
               <Toaster />
             </main>
-          </ThemeProvider>
-        </Auth>
+          </Auth>
+        </ThemeProvider>
       </SessionProvider>
     </ErrorBoundary>
   );
