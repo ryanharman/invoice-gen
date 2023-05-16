@@ -107,12 +107,12 @@ export function Dashboard() {
               <Overview />
             </CardContent>
           </Card>
-          <Card className="col-span-3">
+          <Card className="col-span-3 max-h-[450px] overflow-y-auto">
             <CardHeader>
               <CardTitle>Recent Invoices</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-10 overflow-y-auto">
+              <div className="space-y-10 ">
                 {invoices?.map((invoice) => (
                   <div key={invoice.id} className="flex items-center">
                     <Avatar className="h-9 w-9">

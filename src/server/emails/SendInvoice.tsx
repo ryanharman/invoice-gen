@@ -38,7 +38,7 @@ export const SendInvoiceEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${baseUrl}/static/rynvoice.png`}
+          src={`./static/rynvoice.png`}
           width="42"
           height="42"
           alt="Ryan Harman"

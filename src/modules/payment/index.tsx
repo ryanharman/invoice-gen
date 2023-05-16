@@ -76,7 +76,7 @@ export function Payment() {
               </Typography.H1>
               <Typography.Subtle className="flex items-center gap-2">
                 <Building2Icon className="h-4 w-4" />
-                {invoice?.companyName},{" "}
+                {invoice?.companyName}
               </Typography.Subtle>
               <Typography.Subtle className="flex items-center gap-2">
                 <MailPlus className="h-4 w-4" />{" "}
