@@ -27,6 +27,9 @@ Invoices table
 Invoice creation
 ![Invoice creation](/.github/images/invoice_creation.jpeg?raw=0)
 
+Invoice payment
+![Invoice payment](/.github/images/payment_page.jpeg?raw=0)
+
 ## Run locally
 
 Populate your .env file.
