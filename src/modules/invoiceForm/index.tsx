@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Loader, MailIcon, MinusIcon, PlusIcon } from "lucide-react";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
-import { api } from "~/lib/api";
-import { Invoice, InvoiceSchema, UpdateInvoice } from "~/server/schemas";
-import { InvoiceItemWithKey } from "~/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
-import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
+import { Loader, MailIcon, MinusIcon, PlusIcon } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { api } from '~/lib/api';
+import { Invoice, InvoiceSchema, InvoiceWithItems, UpdateInvoice } from '~/server/schemas';
+import { InvoiceItemWithKey } from '~/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CompanyDetails } from '../invoiceDefaults/CompanyDetails';
+import { PaymentDetails } from '../invoiceDefaults/PaymentDetails';
 import {
   Button,
   Card,
@@ -21,12 +21,23 @@ import {
   Label,
   Separator,
   Typography,
-} from "../ui";
-import { useToast } from "../ui/toast/useToast";
+} from '../ui';
+import { useToast } from '../ui/toast/useToast';
+
+const defaultItem = [{ key: 1, title: "", amount: 80 }];
+const apiResetDefaults = {
+  refetchOnMount: false,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+};
 
 const validationSchema = InvoiceSchema.omit({ status: true }).extend({
   invoiceNumber: z.union([z.string(), z.number()]),
 });
+
+type InvoiceForm = InvoiceWithItems & {
+  items: InvoiceItemWithKey[];
+};
 
 /**
  * When the user is creating a new invoice, this component is used to
@@ -42,26 +53,17 @@ export function InvoiceForm() {
   const { data: editableInvoice, isFetched: isInvoiceFetched } =
     api.invoices.getById.useQuery(
       { id: query.id as string },
-      {
-        enabled: isEdit,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-      }
+      { enabled: isEdit, ...apiResetDefaults }
     );
   const { data: invoiceDefaults, isFetched: areDefaultsFetched } =
     api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
       enabled: !isEdit,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      ...apiResetDefaults,
     });
   const { data: latestInvoiceNumber } =
     api.invoices.getLatestInvoiceNumber.useQuery(undefined, {
       enabled: !isEdit,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      ...apiResetDefaults,
     });
   const { data: hasInvoiceBeenSent } = api.invoices.hasBeenSent.useQuery(
     { id: query.id as string },
@@ -73,13 +75,14 @@ export function InvoiceForm() {
     api.invoices.update.useMutation();
   const { mutateAsync: sendInvoice, isLoading: isInvoiceSending } =
     api.invoices.sendInvoice.useMutation();
+
   const [isInvoiceSent, setIsInvoiceSent] = useState(false);
   const hasBeenSent = useMemo(() => {
     if (isInvoiceSent) return true;
     return hasInvoiceBeenSent;
   }, [isInvoiceSent, hasInvoiceBeenSent]);
 
-  const methods = useForm<Invoice>({
+  const methods = useForm<InvoiceForm>({
     resolver: zodResolver(validationSchema),
     reValidateMode: "onChange",
   });
@@ -90,28 +93,30 @@ export function InvoiceForm() {
     setValue,
     getValues,
     trigger,
+    control,
     formState: { errors },
   } = methods;
-
-  // Invoice items are managed via state, not react-hook-form.
-  // We have a default item that's used for new invoices or ones without
-  // existing items. If the invoice has items, we use those instead.
-  const defaultItem = useMemo(() => [{ key: 1, title: "", amount: 80 }], []);
-  const invoiceItems = editableInvoice?.items.map((i, idx) => ({
-    ...i,
-    key: idx + 1,
-  }));
-  const [items, setItems] = useState<InvoiceItemWithKey[]>(
-    invoiceItems?.length ? invoiceItems : defaultItem
-  );
+  const {
+    fields,
+    append,
+    prepend,
+    remove,
+    update: updateFieldArray,
+  } = useFieldArray({
+    control,
+    name: "items",
+    keyName: "formKey",
+  });
 
   function addItem() {
-    if (items.length !== 0) {
-      const newItemKey = Math.max(...items.map((item) => item.key)) + 1;
-      setItems((prev) => [...prev, { key: newItemKey, title: "", amount: 80 }]);
-      return;
-    }
-    setItems([{ key: 1, title: "", amount: 80 }]);
+    if (!fields.length) return prepend(defaultItem);
+    const newItemKey = Math.max(...fields.map((item) => item.key)) + 1;
+    append({
+      id: undefined,
+      title: "",
+      amount: 80,
+      key: newItemKey,
+    });
   }
 
   function editInvoiceItem(
@@ -119,20 +124,13 @@ export function InvoiceForm() {
     item: InvoiceItemWithKey,
     key: string
   ) {
-    setItems((prev) => {
-      // Remove the previous value and replace it with the new
-      const newItems = prev.reduce((acc, curr) => {
-        if (curr.key === item.key) {
-          return [...acc, { ...curr, [key]: value }];
-        }
-        return [...acc, curr];
-      }, [] as InvoiceItemWithKey[]);
-      return newItems;
-    });
+    const findItemByKey = fields.findIndex((i) => i.key === item.key);
+    updateFieldArray(findItemByKey, { ...item, [key]: value });
   }
 
   function removeItem(item: InvoiceItemWithKey) {
-    setItems((prev) => prev.filter((i) => i.key !== item.key));
+    const findItemByKey = fields.findIndex((i) => i.key === item.key);
+    remove(findItemByKey);
   }
 
   async function create(invoice: Invoice) {
@@ -144,7 +142,7 @@ export function InvoiceForm() {
           invoiceNumber: Number(invoice.invoiceNumber),
           status: "Draft",
         },
-        items: items.map((item) => ({
+        items: fields.map((item) => ({
           title: item.title,
           amount: Number(item.amount),
         })),
@@ -177,7 +175,7 @@ export function InvoiceForm() {
           id: query.id as string,
           invoiceNumber: Number(invoice.invoiceNumber),
         },
-        items: items.map((item) => {
+        items: fields.map((item) => {
           if (item.id) return { ...item, amount: Number(item.amount) };
           return { title: item.title, amount: Number(item.amount) };
         }),
@@ -245,7 +243,11 @@ export function InvoiceForm() {
       return;
     }
     if (isInvoiceFetched) {
-      reset({ ...editableInvoice, customerAddress: "" });
+      reset({
+        ...editableInvoice,
+        items: editableInvoice?.items.map((i, idx) => ({ ...i, key: idx + 1 })),
+        customerAddress: "",
+      });
     }
   }, [
     reset,
@@ -256,16 +258,6 @@ export function InvoiceForm() {
     isEdit,
     isInvoiceFetched,
   ]);
-
-  useEffect(() => {
-    if (isInvoiceFetched && invoiceItems?.length) {
-      // Somewhat sloppy but works for now.
-      // TODO: Revisit this
-      if (JSON.stringify(items) === JSON.stringify(defaultItem)) {
-        setItems(invoiceItems);
-      }
-    }
-  }, [isInvoiceFetched, invoiceItems, items, defaultItem]);
 
   const invoiceDate = getValues("invoiceDate");
 
@@ -369,7 +361,7 @@ export function InvoiceForm() {
                 <CardTitle>Items</CardTitle>
                 <div>
                   <div className="mb-2 space-y-4">
-                    {items?.map((item, idx) => (
+                    {fields?.map((item, idx) => (
                       <Fragment key={item.key}>
                         <div className="flex items-center gap-4">
                           <div className="grow">
@@ -421,7 +413,7 @@ export function InvoiceForm() {
                     </Button>
                     <Typography.Subtle>
                       Total: £
-                      {items?.reduce(
+                      {fields?.reduce(
                         (acc, curr) => acc + Number(curr.amount),
                         0
                       )}

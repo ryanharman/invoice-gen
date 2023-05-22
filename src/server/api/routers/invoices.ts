@@ -1,15 +1,8 @@
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { sendInvoiceEmail } from "~/server/nodemailer";
-import {
-  InvoiceItemSchema,
-  InvoiceSchema,
-  UpdateInvoiceSchema,
-} from "~/server/schemas";
-import {
-  decryptPaymentDetails,
-  encryptPaymentDetails,
-} from "~/server/utils/encryptPaymentDetails";
+import { z } from 'zod';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { sendInvoiceEmail } from '~/server/nodemailer';
+import { InvoiceItemSchema, InvoiceSchema, UpdateInvoiceSchema } from '~/server/schemas';
+import { decryptPaymentDetails, encryptPaymentDetails } from '~/server/utils/encryptPaymentDetails';
 
 export const invoicesRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -100,6 +93,25 @@ export const invoicesRouter = createTRPCRouter({
       const invoice = await ctx.prisma.invoice.update({
         where: { id: input.invoice.id },
         data: invoiceWithEncryptedValues,
+      });
+
+      // Check to see if the items submitted match
+      // the items in the database. If they don't,
+      // we need to delete the ones that aren't
+      // in the new list.
+      const dbItems = await ctx.prisma.invoiceItem.findMany({
+        where: { invoiceId: invoice.id },
+      });
+
+      const dbItemIds = dbItems.map((item) => item.id);
+      const inputItemIds = input.items?.map((item) => item.id);
+
+      const itemsToDelete = dbItemIds.filter(
+        (id) => !inputItemIds?.includes(id)
+      );
+
+      await ctx.prisma.invoiceItem.deleteMany({
+        where: { id: { in: itemsToDelete } },
       });
 
       if (!input.items) return invoice;
