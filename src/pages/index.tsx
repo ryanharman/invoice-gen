@@ -1,13 +1,8 @@
 import type { NextPage } from "next";
-import { NewLayout } from "~/modules";
-import { Dashboard } from "~/modules/dashboard";
+import { Landing } from "~/modules/landing";
 
-const DashboardPage: NextPage = () => {
-  return (
-    <NewLayout>
-      <Dashboard />
-    </NewLayout>
-  );
+const LandingPage: NextPage = () => {
+  return <Landing />;
 };
 
-export default DashboardPage;
+export default LandingPage;

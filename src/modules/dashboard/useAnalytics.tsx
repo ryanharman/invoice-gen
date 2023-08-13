@@ -6,21 +6,20 @@ export function useAnalytics() {
   const [selectedDate, setSelectedDate] = useState<Date>(
     startOfMonth(new Date())
   );
-  const { data: invoices } = api.invoices.getAll.useQuery({
-    limit: 10,
-  });
-  const { data: revenue } = api.analytics.revenue.useQuery({
-    date: selectedDate,
-  });
-  const { data: average } = api.analytics.averageInvoice.useQuery({
-    date: selectedDate,
-  });
-  const { data: monthlyInvoices } = api.analytics.totalMonthlyInvoices.useQuery(
-    { date: selectedDate }
-  );
-  const { data: totalUnpaid } = api.analytics.totalUnpaidInvoices.useQuery({
-    date: selectedDate,
-  });
+
+  const [
+    { data: invoices },
+    { data: revenue },
+    { data: average },
+    { data: monthlyInvoices },
+    { data: totalUnpaid },
+  ] = api.useQueries((t) => [
+    t.invoices.getAll(),
+    t.analytics.revenue({ date: selectedDate }),
+    t.analytics.averageInvoice({ date: selectedDate }),
+    t.analytics.totalMonthlyInvoices({ date: selectedDate }),
+    t.analytics.totalUnpaidInvoices({ date: selectedDate }),
+  ]);
 
   return {
     selectedDate,

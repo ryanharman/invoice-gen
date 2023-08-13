@@ -1,98 +1,66 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import { PlusIcon, PoundSterlingIcon, SheetIcon, TagIcon } from 'lucide-react';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { GithubIcon } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '~/lib';
-import { Button } from './Button';
+import { UserNav } from '../user/UserNav';
+import { buttonVariants } from './Button';
 import { ThemeToggle } from './ThemeToggle';
 import { Typography } from './Typography';
 
 type Props = {
   children: React.ReactNode;
-  title: string | React.ReactNode;
-  description?: string;
-  mainClassName?: string;
-  headerClassName?: string;
+  classNames?: {
+    header?: string;
+    nav?: string;
+    main?: string;
+  };
 };
 
-export function Layout({
-  children,
-  title,
-  description,
-  mainClassName,
-  headerClassName,
-}: Props) {
-  const { push } = useRouter();
-
+export function NewLayout({ children, classNames }: Props) {
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <div className="max-w-screen">
-        <nav className="fixed min-h-screen w-44 border-r px-4 py-2">
-          <Typography.Large className="text-center">rynvoice</Typography.Large>
-          <ul className="mt-4 flex flex-col gap-4">
-            <li>
-              <Button
-                variant="ghost"
-                onClick={() => push("/")}
-                className="w-full"
-              >
-                <SheetIcon className="mr-2 h-4 w-4" />
-                Invoices
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                onClick={() => push("/create")}
-                className="w-full"
-              >
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Create new
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                onClick={() => push("/defaults")}
-                className="w-full"
-              >
-                <TagIcon className="mr-2 h-4 w-4" />
-                Defaults
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                onClick={() => push("/expenses")}
-                className="w-full"
-              >
-                <PoundSterlingIcon className="mr-2 h-4 w-4" />
-                Expenses
-              </Button>
-            </li>
-          </ul>
-        </nav>
-        <div className="h-full w-full pl-44">
-          <header
-            className={cn(
-              "flex justify-between border-b px-8 py-6",
-              headerClassName
-            )}
+      <header
+        className={cn(
+          "flex h-14 w-full items-center justify-between border-b bg-card px-8",
+          classNames?.header
+        )}
+      >
+        <nav
+          className={cn(
+            "flex h-full w-full items-center space-x-4 lg:space-x-6",
+            classNames?.nav
+          )}
+        >
+          <Typography.Large>Rynvoice</Typography.Large>
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium transition-colors hover:text-primary"
           >
-            <div>
-              <Typography.H1>{title}</Typography.H1>
-              {description && <Typography.P>{description}</Typography.P>}
-            </div>
-            <ThemeToggle />
-          </header>
-          <main className={cn("h-full w-full px-8 py-4", mainClassName)}>
-            {children}
-          </main>
-        </div>
-      </div>
+            Dashboard
+          </Link>
+          <Link
+            href="/invoices"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Invoices
+          </Link>
+          <Link
+            href="/defaults"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Defaults
+          </Link>
+        </nav>
+        <a
+          target="_blank"
+          href="https://github.com/ryanharman/invoice-gen"
+          className={buttonVariants({ variant: "ghost" })}
+        >
+          <GithubIcon />
+        </a>
+        <ThemeToggle />
+        <UserNav className="ml-6" />
+      </header>
+      <main className={cn("p-8", classNames?.main)}>{children}</main>
     </>
   );
 }

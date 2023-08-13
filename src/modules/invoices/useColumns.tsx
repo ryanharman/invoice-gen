@@ -2,6 +2,7 @@
 import { format, isValid } from "date-fns";
 import {
   CheckIcon,
+  Clock,
   CrosshairIcon,
   EditIcon,
   GitPullRequestDraftIcon,
@@ -15,6 +16,7 @@ import { useCallback, useMemo } from "react";
 import { cn } from "~/lib";
 import { api } from "~/lib/api";
 import { Invoice } from "@prisma/client";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   Button,
@@ -29,7 +31,6 @@ import {
   DropdownMenuTrigger,
   useToast,
 } from "../ui";
-import { StatusPill } from "./StatusPill";
 
 type ChangeStatusParams = {
   status: "Paid" | "Unpaid" | "Draft";
@@ -109,14 +110,16 @@ export function useColumns() {
         header: "Invoice Number",
         accessorKey: "invoiceNumber",
         cell: ({ row }) => (
-          <div className="font-medium text-muted-foreground">
-            #{row.original.invoiceNumber}
-          </div>
+          <div className="font-medium">INV-{row.original.invoiceNumber}</div>
         ),
       },
       {
-        header: "Company Name",
-        accessorKey: "companyName",
+        header: "Customer Name",
+        accessorKey: "customerName",
+      },
+      {
+        header: "Customer Email",
+        accessorKey: "customerEmail",
       },
       {
         header: "Invoice Date",
@@ -129,17 +132,33 @@ export function useColumns() {
         },
       },
       {
-        header: () => <div className="text-center">Status</div>,
+        header: "Status",
         accessorKey: "status",
-        cell: ({ row }) => <StatusPill status={row.original.status} />,
-      },
-      {
-        header: "Customer Name",
-        accessorKey: "customerName",
-      },
-      {
-        header: "Customer Email",
-        accessorKey: "customerEmail",
+        // cell: ({ row }) => <StatusPill status={row.original.status} />,
+        cell: ({ row }) => (
+          <div className="flex">
+            {row.original.status === "Draft" && (
+              <>
+                <Clock className="mr-2 h-4 w-4" />
+                <span className="text-gray-500">{row.original.status}</span>
+              </>
+            )}
+            {row.original.status === "Unpaid" && (
+              <>
+                <CrosshairIcon className="mr-2 h-4 w-4" />
+                <span className="text-orange-500">{row.original.status}</span>
+              </>
+            )}
+            {row.original.status === "Paid" && (
+              <>
+                <CheckIcon className="mr-2 h-4 w-4" />
+                <span className="text-green-800">{row.original.status}</span>
+              </>
+            )}
+          </div>
+        ),
+        filterFn: (row, id, value) =>
+          (value as string).includes(row.getValue(id)),
       },
       {
         id: "actions",
@@ -147,7 +166,12 @@ export function useColumns() {
           // Thought: Consider breaking this down into a separate component
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Actions</Button>
+              <Button
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <DotsHorizontalIcon />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuItem

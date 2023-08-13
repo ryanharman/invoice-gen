@@ -1,9 +1,14 @@
-import { UploadCloudIcon } from 'lucide-react';
-import { api } from '~/lib/api';
-import { Table } from '../table';
-import { Button, Dialog, DialogTrigger, Skeleton, Typography } from '../ui';
-import { UploadExpensesModal } from './UploadExpensesModal';
-import { useColumns } from './useColumns';
+import { UploadCloudIcon } from "lucide-react";
+import {
+  Button,
+  DataTable,
+  Dialog,
+  DialogTrigger,
+  Skeleton,
+  Typography,
+} from "../ui";
+import { UploadExpensesModal } from "./UploadExpensesModal";
+import { useColumns } from "./useColumns";
 
 export function Expenses() {
   // const { data } = api.invoices.getAll.useQuery();
@@ -35,7 +40,7 @@ export function Expenses() {
           <UploadExpensesModal />
         </Dialog>
       </div>
-      <Table data={data} columns={columns} />
+      <DataTable data={data} columns={columns} />
     </div>
   );
 }

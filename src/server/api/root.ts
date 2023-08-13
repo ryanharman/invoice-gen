@@ -1,9 +1,11 @@
-import { createTRPCRouter } from "~/server/api/trpc";
-import { analyticsRouter } from "./routers/analytics";
-import { defaultsRouter } from "./routers/defaults";
-import { invoicesRouter } from "./routers/invoices";
-import { meRouter } from "./routers/me";
-import { paymentRouter } from "./routers/payment";
+import { createTRPCRouter } from '~/server/api/trpc';
+import { analyticsRouter } from './routers/analytics';
+import { defaultsRouter } from './routers/defaults';
+import { invoicesRouter } from './routers/invoices';
+import { meRouter } from './routers/me';
+import { paymentRouter } from './routers/payment';
+import { stripeRouter } from './routers/stripe';
+import { userRouter } from './routers/user';
 
 /**
  * This is the primary router for your server.
@@ -16,6 +18,8 @@ export const appRouter = createTRPCRouter({
   invoiceDefaults: defaultsRouter,
   analytics: analyticsRouter,
   payments: paymentRouter,
+  stripe: stripeRouter,
+  user: userRouter,
 });
 
 // export type definition of API

@@ -1,4 +1,4 @@
-import { AxeIcon, FileIcon, PoundSterlingIcon, UsersIcon } from "lucide-react";
+import { AxeIcon, FileIcon, PoundSterlingIcon, UsersIcon } from 'lucide-react';
 import {
   Avatar,
   AvatarFallback,
@@ -9,9 +9,9 @@ import {
   CardTitle,
   DatePicker,
   Typography,
-} from "../ui";
-import { Overview } from "./OverviewChart";
-import { useAnalytics } from "./useAnalytics";
+} from '../ui';
+import { Overview } from './OverviewChart';
+import { useAnalytics } from './useAnalytics';
 
 export function Dashboard() {
   const {

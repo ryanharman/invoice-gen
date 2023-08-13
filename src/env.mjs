@@ -28,6 +28,9 @@ const server = z.object({
   EMAIL_USER: z.string(),
   EMAIL_PASSWORD: z.string(),
   EMAIL_URL: z.string().optional(),
+  STRIPE_KEY_LIVE: z.string().optional(),
+  STRIPE_KEY_TEST: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 /**
@@ -58,6 +61,9 @@ const processEnv = {
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   EMAIL_URL: process.env.EMAIL_URL,
+  STRIPE_KEY_LIVE: process.env.STRIPE_KEY_LIVE,
+  STRIPE_KEY_TEST: process.env.STRIPE_KEY_TEST,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
 };
 
 // Don't touch the part below

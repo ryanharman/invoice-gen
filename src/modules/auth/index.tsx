@@ -35,7 +35,11 @@ export const Auth = ({
   required,
 }: AuthProps): JSX.Element | null => {
   const { pathname } = useRouter();
-  const actualRequired = required && !NO_AUTH_REQUIRED_PAGES.includes(pathname);
+  const actualRequired =
+    required &&
+    !NO_AUTH_REQUIRED_PAGES.find(
+      (p) => p.toLowerCase() === pathname.toLowerCase()
+    );
   const { session, status } = useOurSession({
     redirectLink: "/login",
     required: actualRequired,

@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Loader, MailIcon, MinusIcon, PlusIcon } from 'lucide-react';
-import { useRouter } from 'next/router';
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { api } from '~/lib/api';
-import { Invoice, InvoiceSchema, InvoiceWithItems, UpdateInvoice } from '~/server/schemas';
-import { InvoiceItemWithKey } from '~/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CompanyDetails } from '../invoiceDefaults/CompanyDetails';
-import { PaymentDetails } from '../invoiceDefaults/PaymentDetails';
+import {
+  Loader,
+  MailIcon,
+  MailWarningIcon,
+  MinusIcon,
+  PlusIcon,
+} from "lucide-react";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { api } from "~/lib/api";
+import {
+  Invoice,
+  InvoiceSchema,
+  InvoiceWithItems,
+  UpdateInvoice,
+} from "~/server/schemas";
+import { InvoiceItemWithKey } from "~/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
+import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
 import {
   Button,
   Card,
@@ -21,8 +32,8 @@ import {
   Label,
   Separator,
   Typography,
-} from '../ui';
-import { useToast } from '../ui/toast/useToast';
+} from "../ui";
+import { useToast } from "../ui/toast/useToast";
 
 const defaultItem = [{ key: 1, title: "", amount: 80 }];
 const apiResetDefaults = {
@@ -55,20 +66,23 @@ export function InvoiceForm() {
       { id: query.id as string },
       { enabled: isEdit, ...apiResetDefaults }
     );
-  const { data: invoiceDefaults, isFetched: areDefaultsFetched } =
-    api.invoiceDefaults.getUserDefaults.useQuery(undefined, {
+
+  const [
+    { data: invoiceDefaults, isFetched: areDefaultsFetched },
+    { data: latestInvoiceNumber },
+    { data: hasInvoiceBeenSent },
+  ] = api.useQueries((t) => [
+    t.invoiceDefaults.getUserDefaults(undefined, {
       enabled: !isEdit,
       ...apiResetDefaults,
-    });
-  const { data: latestInvoiceNumber } =
-    api.invoices.getLatestInvoiceNumber.useQuery(undefined, {
+    }),
+    t.invoices.getLatestInvoiceNumber(undefined, {
       enabled: !isEdit,
       ...apiResetDefaults,
-    });
-  const { data: hasInvoiceBeenSent } = api.invoices.hasBeenSent.useQuery(
-    { id: query.id as string },
-    { enabled: isEdit }
-  );
+    }),
+    t.invoices.hasBeenSent({ id: query.id as string }, { enabled: isEdit }),
+  ]);
+
   const { mutateAsync: createInvoice, isLoading: isInvoiceCreating } =
     api.invoices.create.useMutation();
   const { mutateAsync: updateInvoice, isLoading: isInvoiceUpdating } =
@@ -273,6 +287,18 @@ export function InvoiceForm() {
               ? "Add new items, update existing ones, change your company or payment details for this invoice only."
               : "Create a new invoice, add items, change your company or payment details for this invoice only."}
           </Typography.Subtle>
+          {hasBeenSent && (
+            <div className="mt-6 max-w-prose rounded-lg border border-orange-500/50 bg-orange-100/50 p-4">
+              <h2 className="flex items-center text-lg font-medium tracking-wide text-orange-500">
+                <MailWarningIcon className="mr-2 h-4 w-4" /> Invoice has been
+                sent!
+              </h2>
+              <Typography.Subtle>
+                Updating any information on this page will notify the customer
+                via a new email and updated payment page.
+              </Typography.Subtle>
+            </div>
+          )}
         </div>
         <div>
           {isEdit && editableInvoice?.status !== "Paid" && !hasBeenSent && (

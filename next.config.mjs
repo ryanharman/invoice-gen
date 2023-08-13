@@ -26,5 +26,8 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ["images.unsplash.com", "github.com"],
+  },
 };
 export default config;

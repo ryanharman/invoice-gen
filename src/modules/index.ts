@@ -6,7 +6,7 @@ export * from "./invoiceDefaults";
 export * from "./invoiceForm";
 export * from "./invoicePreview";
 export * from "./invoices";
+export * from "./landing";
 export * from "./login";
 export * from "./payment";
-export * from "./table";
 export * from "./ui";
