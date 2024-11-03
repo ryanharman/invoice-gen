@@ -1,9 +1,10 @@
-import { InvoiceForm, NewLayout } from "~/modules";
+import { Layout } from "~/components/layout";
+import { InvoiceForm } from "~/modules";
 
 export default function Edit() {
   return (
-    <NewLayout>
+    <Layout>
       <InvoiceForm />
-    </NewLayout>
+    </Layout>
   );
 }

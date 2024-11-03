@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/router";
 import {
   Loader,
   MailIcon,
@@ -6,34 +10,25 @@ import {
   MinusIcon,
   PlusIcon,
 } from "lucide-react";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/lib/api";
 import {
-  Invoice,
   InvoiceSchema,
-  InvoiceWithItems,
-  UpdateInvoice,
+  type Invoice,
+  type InvoiceWithItems,
+  type UpdateInvoice,
 } from "~/server/schemas";
-import { InvoiceItemWithKey } from "~/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
+import type { InvoiceItemWithKey } from "~/types";
+import { useToast } from "~/hooks/use-toast";
+import { Button } from "~/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Calendar } from "~/components/ui/calendar";
+import { Separator } from "~/components/ui/separator";
+import { Typography } from "~/components/typography";
 import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  DatePicker,
-  Input,
-  Label,
-  Separator,
-  Typography,
-} from "../ui";
-import { useToast } from "../ui/toast/useToast";
+import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
 
 const defaultItem = [{ key: 1, title: "", amount: 80 }];
 const apiResetDefaults = {
@@ -60,7 +55,7 @@ export function InvoiceForm() {
   const { toast } = useToast();
   const { query, push } = useRouter();
   const isEdit = !!query.id;
-  const context = api.useContext();
+  const context = api.useUtils();
   const { data: editableInvoice, isFetched: isInvoiceFetched } =
     api.invoices.getById.useQuery(
       { id: query.id as string },
@@ -336,47 +331,60 @@ export function InvoiceForm() {
                     <Label htmlFor="invoiceNumber">Invoice number</Label>
                     <Input
                       {...register("invoiceNumber")}
-                      error={errors.invoiceNumber?.message}
                       id="invoiceNumber"
                       type="text"
                       inputMode="numeric"
                       pattern="[0-9]*"
                       placeholder="77"
                     />
+                    {errors.invoiceNumber?.message && (
+                      <Typography.Small>
+                        {errors.invoiceNumber?.message}
+                      </Typography.Small>
+                    )}
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="invoiceDate">Invoice issue date</Label>
-                    <DatePicker
+                    <Calendar
                       id="invoiceDate"
-                      error={errors.invoiceDate?.message}
-                      defaultValue={
-                        invoiceDate ? new Date(invoiceDate) : undefined
-                      }
                       selected={invoiceDate ? new Date(invoiceDate) : undefined}
                       onSelect={onDayClick}
                       required
                     />
+                    {errors.invoiceDate?.message && (
+                      <Typography.Small>
+                        {errors.invoiceDate.message}
+                      </Typography.Small>
+                    )}
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="customerName">Recipient name</Label>
                   <Input
                     {...register("customerName")}
-                    error={errors.customerName?.message}
                     id="customerName"
                     type="text"
                     placeholder="Jason Bourne Ltd"
                   />
+                  {errors.customerName?.message && (
+                    <Typography.Small>
+                      {errors.customerName.message}
+                    </Typography.Small>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="customerEmail">Recipient email</Label>
                   <Input
                     {...register("customerEmail")}
-                    error={errors.customerEmail?.message}
                     id="customerEmail"
                     type="email"
                     placeholder="me@email.com"
                   />
+                  {errors.customerEmail?.message && (
+                    <Typography.Small>
+                      {errors.customerEmail?.message}
+                    </Typography.Small>
+                  )}
                 </div>
               </section>
 

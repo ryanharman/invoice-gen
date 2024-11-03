@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { useCallback, useMemo } from "react";
+import { useRouter } from "next/router";
 import { format, isValid } from "date-fns";
 import {
   CheckIcon,
@@ -11,15 +13,12 @@ import {
   SearchIcon,
   TrashIcon,
 } from "lucide-react";
-import { useRouter } from "next/router";
-import { useCallback, useMemo } from "react";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Invoice } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "~/lib";
 import { api } from "~/lib/api";
-import { Invoice } from "@prisma/client";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { ColumnDef } from "@tanstack/react-table";
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -29,8 +28,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-  useToast,
-} from "../ui";
+} from "~/components/ui/dropdown-menu";
+import { Button } from "~/components/ui/button";
+import { useToast } from "~/hooks/use-toast";
 
 type ChangeStatusParams = {
   status: "Paid" | "Unpaid" | "Draft";
@@ -40,7 +40,7 @@ type ChangeStatusParams = {
 export function useColumns() {
   const { push } = useRouter();
   const { toast } = useToast();
-  const context = api.useContext();
+  const context = api.useUtils();
   const { mutateAsync: update } = api.invoices.update.useMutation();
   const { mutateAsync: duplicate } = api.invoices.duplicate.useMutation();
   const { mutateAsync: deleteInvoice } = api.invoices.delete.useMutation();

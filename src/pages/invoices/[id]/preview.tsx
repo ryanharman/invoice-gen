@@ -1,8 +1,11 @@
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { InvoicePreview } from "~/modules";
 import { api } from "~/lib/api";
-import { Button, InvoicePreview, NewLayout, Typography } from "~/modules";
+import { Button } from "~/components/ui/button";
+import { Layout } from "~/components/layout";
+import { Typography } from "~/components/typography";
 
 export default function Preview() {
   const { query } = useRouter();
@@ -21,7 +24,7 @@ export default function Preview() {
   }
 
   return (
-    <NewLayout>
+    <Layout>
       <div className="flex items-center justify-between">
         <Typography.H1>Invoice {data.invoiceNumber}</Typography.H1>
         <Button variant="outline" onClick={handlePrint}>
@@ -62,6 +65,6 @@ export default function Preview() {
           }}
         />
       </div>
-    </NewLayout>
+    </Layout>
   );
 }

@@ -1,13 +1,17 @@
-import "~/styles/globals.css";
-import { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { useState } from "react";
 import { AppType } from "next/app";
 import Head from "next/head";
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import { QueryClient } from "@tanstack/react-query";
+import "~/styles/globals.css";
+
+import { Auth } from "~/modules/auth";
 import { cn } from "~/lib";
 import { api } from "~/lib/api";
-import { ErrorBoundary, ThemeProvider } from "~/modules";
-import { Auth } from "~/modules/auth";
-import { Toaster } from "~/modules/ui/toast/Toaster";
+import { Toaster } from "~/components/ui/toaster";
+import { ErrorBoundary } from "~/components/error-boundary";
+import { ThemeProvider } from "~/components/theme-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -16,8 +20,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <ErrorBoundary>
       <Head>
-        <title>Ryan Harman&apos;s Freelance App</title>
-        <meta name="description" content="Ree anne herman" />
+        <title>Breezy | Invoicing software for anyone</title>
+        <meta
+          name="description"
+          content="Organise your invoices, customers and financials stress free"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>

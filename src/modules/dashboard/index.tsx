@@ -1,17 +1,10 @@
-import { AxeIcon, FileIcon, PoundSterlingIcon, UsersIcon } from 'lucide-react';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  DatePicker,
-  Typography,
-} from '../ui';
-import { Overview } from './OverviewChart';
-import { useAnalytics } from './useAnalytics';
+import { AxeIcon, FileIcon, PoundSterlingIcon, UsersIcon } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Typography } from "~/components/typography";
+import { DatePicker } from "~/components/date-picker";
+import { Overview } from "./OverviewChart";
+import { useAnalytics } from "./useAnalytics";
 
 export function Dashboard() {
   const {
@@ -32,7 +25,8 @@ export function Dashboard() {
     <>
       <div className="mb-8 flex items-center justify-between">
         <Typography.H1>Dashboard</Typography.H1>
-        <DatePicker onDayClick={onDayClick} selected={selectedDate} />
+        {/* @ts-expect-error - this needs correcting */}
+        <DatePicker onChange={onDayClick} value={selectedDate} />
       </div>
 
       <div className="space-y-4">

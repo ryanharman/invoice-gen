@@ -33,6 +33,15 @@ export default async function webhookHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧");
+  console.log(" STRIPE WEBHOOK EVENT RECEIVED");
+  console.log({ req, res });
+  console.log("🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧");
+
+  if (env.STRIPE_ENABLED === "false" || env.STRIPE_ENABLED !== "true") {
+    return res.status(400).send("Stripe is not enabled");
+  }
+
   // POST /api/stripe/webhook – listen to Stripe webhooks
   if (req.method && req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
@@ -99,13 +108,20 @@ export default async function webhookHandler(
         const stripeCustomerId = invoice.customer.toString();
         const stripeSubscriptionId = invoice.subscription.toString();
 
+        console.log({ invoice });
+
+        const subscription = await stripe.subscriptions.retrieve(
+          stripeSubscriptionId
+        );
+        console.log({ subscription });
+
         // when the user pays an invoice, update the billingCycleEnd to
         // the end of the current billing period
         await prisma.user.update({
           where: { stripeCustomerId },
           data: {
             stripeSubscriptionId,
-            billingCycleEnd: new Date(invoice.period_end * 1000),
+            billingCycleEnd: new Date(subscription.current_period_end * 1000),
           },
         });
       }

@@ -1,13 +1,8 @@
 import type { NextPage } from "next";
-import { NewLayout } from "~/modules";
-import { Expenses } from "~/modules/expenses";
+import { Layout } from "~/components/layout";
 
-const Create: NextPage = () => {
-  return (
-    <NewLayout>
-      <Expenses />
-    </NewLayout>
-  );
+const Expenses: NextPage = () => {
+  return <Layout>Work in progress... 🚧</Layout>;
 };
 
-export default Create;
+export default Expenses;

@@ -1,12 +1,11 @@
 import {
-  Button,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
-  Input,
-} from '../ui';
+  DialogDescription,
+} from "@radix-ui/react-dialog";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { DialogHeader, DialogFooter } from "~/components/ui/dialog";
 
 export function UploadExpensesModal() {
   return (

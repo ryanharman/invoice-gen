@@ -1,12 +1,35 @@
-import { Invoices, NewLayout } from "~/modules";
-
 import type { NextPage } from "next";
+import Link from "next/link";
+import { Invoices } from "~/modules";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
+import { Layout } from "~/components/layout";
 
 const InvoicesPage: NextPage = () => {
   return (
-    <NewLayout>
+    <Layout>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/dashboard">Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/invoices">Invoices</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <Invoices />
-    </NewLayout>
+    </Layout>
   );
 };
 

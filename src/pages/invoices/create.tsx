@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
-import { NewLayout } from "~/modules";
+import { Layout } from "~/components/layout";
 import { InvoiceForm } from "~/modules/invoiceForm";
 
 const Create: NextPage = () => {
   return (
-    <NewLayout>
+    <Layout>
       <InvoiceForm />
-    </NewLayout>
+    </Layout>
   );
 };
 

@@ -1,12 +1,9 @@
 import { UploadCloudIcon } from "lucide-react";
-import {
-  Button,
-  DataTable,
-  Dialog,
-  DialogTrigger,
-  Skeleton,
-  Typography,
-} from "../ui";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Button } from "~/components/ui/button";
+import { DataTable } from "~/components/data-table";
+import { Typography } from "~/components/typography";
 import { UploadExpensesModal } from "./UploadExpensesModal";
 import { useColumns } from "./useColumns";
 
@@ -14,6 +11,7 @@ export function Expenses() {
   // const { data } = api.invoices.getAll.useQuery();
   const columns = useColumns();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: any[] = [];
 
   if (!data) {

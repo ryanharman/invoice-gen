@@ -1,12 +1,25 @@
 import type { NextPage } from "next";
-import { NewLayout } from "~/modules";
-import { Dashboard } from "~/modules/dashboard";
+import { Dashboard } from "~/modules";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+} from "~/components/ui/breadcrumb";
+import { Layout } from "~/components/layout";
 
 const DashboardPage: NextPage = () => {
   return (
-    <NewLayout>
+    <Layout>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <Dashboard />
-    </NewLayout>
+    </Layout>
   );
 };
 

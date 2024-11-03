@@ -1,6 +1,5 @@
 export * from "./auth";
 export * from "./dashboard";
-export * from "./errorBoundary";
 export * from "./expenses";
 export * from "./invoiceDefaults";
 export * from "./invoiceForm";
@@ -9,4 +8,4 @@ export * from "./invoices";
 export * from "./landing";
 export * from "./login";
 export * from "./payment";
-export * from "./ui";
+export * from "./account";

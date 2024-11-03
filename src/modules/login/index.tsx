@@ -1,13 +1,13 @@
-import { Code, Github, LoaderIcon } from 'lucide-react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { api } from '~/lib';
-import { Button } from '../ui';
+import { Code, Github, LoaderIcon } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { Button } from "~/components/ui/button";
+import { api } from "~/lib";
 
 export function Login() {
   const { push } = useRouter();
-  const context = api.useContext();
+  const context = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
 
   async function onGitHubLogin() {

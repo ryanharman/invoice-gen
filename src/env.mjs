@@ -31,6 +31,7 @@ const server = z.object({
   STRIPE_KEY_LIVE: z.string().optional(),
   STRIPE_KEY_TEST: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  STRIPE_ENABLED: z.enum(["true", "false"]).optional().default("false"),
 });
 
 /**
@@ -39,6 +40,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_ENV: z.enum(["development", "test", "production"]),
 });
 
 /**
@@ -64,6 +66,8 @@ const processEnv = {
   STRIPE_KEY_LIVE: process.env.STRIPE_KEY_LIVE,
   STRIPE_KEY_TEST: process.env.STRIPE_KEY_TEST,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_ENABLED: process.env.STRIPE_ENABLED ?? "false",
+  NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
 };
 
 // Don't touch the part below

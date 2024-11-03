@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
-import Stripe from "stripe";
-import { z } from "zod";
-import { env } from "~/env.mjs";
-import { stripe } from "~/server/stripe";
-import { PLANS } from "~/server/stripe/constants";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import Stripe from 'stripe';
+import { z } from 'zod';
+import { env } from '~/env.mjs';
+import { stripe } from '~/server/stripe';
+import { PLANS } from '~/server/stripe/constants';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 const URL_PREFIX = process.env.VERCEL ?? "http://localhost:3000";
 
@@ -23,6 +23,7 @@ export const stripeRouter = createTRPCRouter({
       customer_email: ctx.session.user.email ?? undefined,
     });
 
+    console.log({ session });
     return session.url;
   }),
   getSubscriptionInfo: protectedProcedure

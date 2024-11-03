@@ -1,4 +1,4 @@
-import { ErrorBoundary } from "~/modules";
+import { ErrorBoundary } from "~/components/error-boundary";
 import { Payment } from "~/modules/payment";
 
 export default function PendingPaymentPage() {

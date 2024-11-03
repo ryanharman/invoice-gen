@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { decryptPaymentDetails } from "~/server/utils/encryptPaymentDetails";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { z } from 'zod';
+import { decryptPaymentDetails } from '~/server/utils/encryptPaymentDetails';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 export const paymentRouter = createTRPCRouter({
   getByKey: publicProcedure

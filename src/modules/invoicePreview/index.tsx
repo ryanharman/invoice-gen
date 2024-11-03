@@ -1,6 +1,5 @@
-/* eslint-disable react/display-name */
 import { forwardRef } from "react";
-import { ErrorBoundary } from "../errorBoundary";
+import { ErrorBoundary } from "~/components/error-boundary";
 import { Contact, ContactProps } from "./Contact";
 import { Header, HeaderProps } from "./Header";
 import { PaymentDetailProps, PaymentDetails } from "./PaymentDetails";
@@ -30,3 +29,4 @@ export const InvoicePreview = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+InvoicePreview.displayName = "InvoicePreview";

@@ -1,5 +1,5 @@
-import { startOfMonth } from "date-fns";
 import { useState } from "react";
+import { startOfMonth } from "date-fns";
 import { api } from "~/lib";
 
 export function useAnalytics() {

@@ -7,6 +7,16 @@
  * need to use are documented accordingly near the end.
  */
 
+import { Session } from 'next-auth';
+import superjson from 'superjson';
+import { getServerAuthSession } from '~/server/auth';
+import { prisma } from '~/server/db';
+/**
+ * 2. INITIALIZATION
+ *
+ * This is where the tRPC API is initialized, connecting the context and transformer.
+ */
+import { initTRPC, TRPCError } from '@trpc/server';
 /**
  * 1. CONTEXT
  *
@@ -14,11 +24,7 @@
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
-
-import { getServerAuthSession } from "~/server/auth";
-import { prisma } from "~/server/db";
+import { CreateNextContextOptions } from '@trpc/server/adapters/next';
 
 type CreateContextOptions = {
   session: Session | null;
@@ -34,7 +40,7 @@ type CreateContextOptions = {
  *
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
@@ -57,14 +63,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     session,
   });
 };
-
-/**
- * 2. INITIALIZATION
- *
- * This is where the tRPC API is initialized, connecting the context and transformer.
- */
-import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

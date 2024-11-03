@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { useMemo, useRef } from "react";
+import { useRouter } from "next/router";
+import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
 import {
   Building2Icon,
@@ -7,27 +10,15 @@ import {
   DownloadIcon,
   MailPlus,
 } from "lucide-react";
-import { useRouter } from "next/router";
-import { useMemo, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
 import { api, cn } from "~/lib";
+import { Card, CardHeader, CardContent } from "~/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Label } from "~/components/ui/label";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
+import { Typography } from "~/components/typography";
 import { InvoicePreview } from "../invoicePreview";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Label,
-  Separator,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  Typography,
-} from "../ui";
 
 /**
  * TODO: Pull payment ID from URL and fetch email
