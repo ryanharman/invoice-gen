@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "email-dev": "email dev --dir src/server/emails --port 3001",
-    "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
   },
