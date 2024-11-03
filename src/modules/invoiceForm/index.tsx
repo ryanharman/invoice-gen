@@ -24,11 +24,11 @@ import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Calendar } from "~/components/ui/calendar";
 import { Separator } from "~/components/ui/separator";
 import { Typography } from "~/components/typography";
 import { PaymentDetails } from "../invoiceDefaults/PaymentDetails";
 import { CompanyDetails } from "../invoiceDefaults/CompanyDetails";
+import { DatePicker } from "~/components/date-picker";
 
 const defaultItem = [{ key: 1, title: "", amount: 80 }];
 const apiResetDefaults = {
@@ -345,11 +345,9 @@ export function InvoiceForm() {
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="invoiceDate">Invoice issue date</Label>
-                    <Calendar
-                      id="invoiceDate"
-                      selected={invoiceDate ? new Date(invoiceDate) : undefined}
-                      onSelect={onDayClick}
-                      required
+                    <DatePicker
+                      value={invoiceDate ? new Date(invoiceDate) : new Date()}
+                      onChange={onDayClick}
                     />
                     {errors.invoiceDate?.message && (
                       <Typography.Small>
