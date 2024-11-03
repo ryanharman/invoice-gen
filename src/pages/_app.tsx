@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { AppType } from "next/app";
 import Head from "next/head";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { QueryClient } from "@tanstack/react-query";
 import "~/styles/globals.css";
 
 import { Auth } from "~/modules/auth";
@@ -12,11 +10,13 @@ import { api } from "~/lib/api";
 import { Toaster } from "~/components/ui/toaster";
 import { ErrorBoundary } from "~/components/error-boundary";
 import { ThemeProvider } from "~/components/theme-provider";
+import { usePersistedQueryClient } from "~/hooks/use-persisted-queryclient";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  usePersistedQueryClient();
   return (
     <ErrorBoundary>
       <Head>
