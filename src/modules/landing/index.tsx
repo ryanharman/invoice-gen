@@ -3,8 +3,11 @@ import { format } from "date-fns";
 import { GithubIcon, TwitterIcon } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
 import { LogoIcon } from "~/components/logo";
+import { api } from "~/lib";
 
 export function Landing() {
+  const { data: me } = api.me.session.useQuery();
+
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-zinc-900 to-zinc-800 text-zinc-100">
       <header className="flex items-center justify-between border-b border-zinc-800/50 p-8">
@@ -15,16 +18,27 @@ export function Landing() {
           </h4>
         </div>
         <nav className="flex gap-8">
-          <a href="https://github.com/ryanharman/invoice-gen" target="_blank">
+          <a
+            href="https://github.com/ryanharman/invoice-gen"
+            rel="noreferrer"
+            target="_blank"
+          >
             <GithubIcon className="h-6 w-6 cursor-pointer transition-all hover:text-purple-400" />
           </a>
-          <a href="https://twitter.com/ryanharman_" target="_blank">
+          <a
+            href="https://twitter.com/ryanharman_"
+            rel="noreferrer"
+            target="_blank"
+          >
             <TwitterIcon className="h-6 w-6 cursor-pointer transition-all hover:text-blue-400" />
           </a>
         </nav>
       </header>
       <main className="flex h-full grow items-center justify-center">
-        <Link href="/login" className={buttonVariants({ variant: "outline" })}>
+        <Link
+          href={me ? "/dashboard" : "/login"}
+          className={buttonVariants({ variant: "outline" })}
+        >
           Try me
         </Link>
       </main>
